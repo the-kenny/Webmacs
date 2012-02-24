@@ -8,20 +8,21 @@
     (let [op (first term)]
       (case op
         (insert replace) (let [[_ start end data] term]
-                           {:type (keyword op)
-                                  :start start
-                                  :end end
-                                  :data data})
+                           (let [decoded (String. (Base64/decodeBase64 ^String data))]
+                             {:type (keyword op)
+                                    :start start
+                                    :end end
+                                    :data decoded}))
         delete (let [[_ start end] term] {:type :delete
                         :start start
                         :end end})
         buffer-data (let [[_ length name data] term
-                          decoded (Base64/decodeBase64 data)]
+                          decoded (String. (Base64/decodeBase64 ^String data))]
                       (assert (= (count decoded) length))
                       {:type :buffer-data
                        :name name
                        :length length
-                       :data (String. decoded)})))))
+                       :data decoded})))))
 
 (defn emacs-connection-loop [input output]
   (println (str "" (parse-message (read input))))
