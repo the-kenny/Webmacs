@@ -1,6 +1,7 @@
 (ns webmacs.core
   (:require [webmacs.buffer :as buffer]
-            [cljs.reader :as reader]))
+            [cljs.reader :as reader]
+            [goog.dom :as dom]))
 
 (def ^:dynamic *socket* nil)
 (def ^:dynamic *buffer* nil)
@@ -14,7 +15,9 @@
 (defn handle-socket-message [socket-event]
   (let [obj (reader/read-string (.-data socket-event))]
     (.log js/console (pr-str obj))
-    (set! *buffer* (buffer/apply-modification *buffer* obj))))
+    (set! *buffer* (buffer/apply-modification *buffer* obj))
+    ;; TODO: Buffer changed
+    (dom/setTextContent (dom/getElement "buffer-contents") (:contents *buffer*))))
 
 (defn handle-close [])
 (defn handle-open [])
@@ -26,5 +29,3 @@
     (set! (.-onclose ws) (fn [] (handle-close)))
     (set! (.-onmessage ws) #(handle-socket-message %))
     (set! *socket* ws)))
-
-(open-socket "ws://localhost:3000/sockets/footest")

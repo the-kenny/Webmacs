@@ -15,15 +15,18 @@
 (defpage "/emacs/:name" {:keys [name]}
   (html5 [:head
           [:title "Emacs: " name]
-          (include-js "/js/main.js")]))
+          (include-js "/js/main.js")]
+         [:body
+          [:pre {:id "buffer-contents"}]
+          (javascript-tag ;; "(open-socket \"ws://localhost:3000/sockets/\")"
+           (str"webmacs.core.open_socket(\"ws://localhost:3000/sockets/" name "\")"))]))
 
 (defwebsocket "/sockets/:sname" {:keys [sname]} conn
-  (send-message conn "Hello client!")   ;`send-message' is equal to `enqueue', so `conn' must be a channel
-  (enqueue (:request-channel conn) "foobar")
-
-  (println conn)
+  ;;`send-message' is equal to `enqueue', so `conn' must be a channel
+  ;; TODO: Move this out of here
+  ;; TODO: Remove client on close
   (let [chan (permanent-channel)]
-    (receive-all chan println)
+    (receive-all chan (fn [msg] (enqueue (:request-channel conn) (str msg))))
    (publishers/add-client! sname chan))
 
   (on-receive conn (fn [msg] (println "Got a message: " msg)))
