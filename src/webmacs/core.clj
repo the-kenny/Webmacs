@@ -11,12 +11,12 @@
         (insert replace) (let [[_ start end data] term]
                            (let [decoded (String. (Base64/decodeBase64 ^String data) "utf-8")]
                              {:type (keyword op)
-                              :start start
-                              :end end
+                              :start (dec start)
+                              :end (dec end)
                               :data decoded}))
         delete (let [[_ start end] term] {:type :delete
-                                          :start start
-                                          :end end})
+                                          :start (dec start)
+                                          :end (dec end)})
         buffer-data (let [[_ length name data] term
                           decoded (String. (Base64/decodeBase64 ^String data) "utf-8")]
                       (assert (= (count decoded) length))
