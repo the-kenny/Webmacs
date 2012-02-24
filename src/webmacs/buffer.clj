@@ -11,6 +11,11 @@
     (assoc buffer :contents (.concat before after))))
 
 (defn insert-data [buffer at data]
-  (update-in buffer [:contents] #(let [before (subs % at)
-                                       after (subs % at)]
-                                   (str before data after))))
+  (let [before (subs (:contents buffer) 0 at)
+        after (subs (:contents buffer) at)]
+    (assoc buffer :contents (str before data after))))
+
+(defn replace-region [buffer from to data]
+  (let [before (subs (:contents buffer) 0 from)
+        after (subs (:contents buffer) to)]
+   (assoc buffer :contents (str before data after))))
