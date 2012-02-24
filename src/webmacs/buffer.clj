@@ -1,5 +1,6 @@
 (ns webmacs.buffer)
 
+;;; TODO: Replace `filename' with `name'
 (defrecord EmacsBuffer [filename contents])
 
 (defn make-buffer
