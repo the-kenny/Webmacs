@@ -19,7 +19,7 @@
          [:body
           [:pre {:id "buffer-contents"}]
           (javascript-tag ;; "(open-socket \"ws://localhost:3000/sockets/\")"
-           (str"webmacs.core.open_socket(\"ws://localhost:3000/sockets/" name "\")"))]))
+           (str "webmacs.core.open_socket(\"ws://\"+window.location.host+\"/sockets/" name "\")"))]))
 
 (defwebsocket "/sockets/:sname" {:keys [sname]} conn
   ;;`send-message' is equal to `enqueue', so `conn' must be a channel
