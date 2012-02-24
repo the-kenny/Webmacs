@@ -6,3 +6,6 @@
 /.lein-failures
 /checkouts
 /.lein-deps-sum
+/resources/public/js/main.js
+.clojurescript-output/
+.lein-plugins/
