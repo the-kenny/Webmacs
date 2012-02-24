@@ -25,23 +25,29 @@
                        :length length
                        :data decoded})))))
 
-(defn emacs-connection-loop [buffer input output]
+(def ^:dynamic *buffer* nil)
+
+(defn emacs-connection-loop [input output]
   (let [request (parse-message (read input))
         _ (println request)
         newbuffer (case (:type request)
-                    :buffer-data (assoc buffer :filename (:name request)
-                                        :contents (:data request))
-                    :insert (buffer/insert-data buffer (:start request) (:data request))
-                    :replace (buffer/replace-region buffer (:start request) (:end request) (:data request))
-                    :delete (buffer/delete-region buffer (:start request) (:end request)))]
+                    :buffer-data (assoc *buffer*
+                                   :filename (:name request)
+                                   :contents (:data request))
+                    :insert (buffer/insert-data *buffer* (:start request) (:data request))
+                    :replace (buffer/replace-region *buffer* (:start request) (:end request) (:data request))
+                    :delete (buffer/delete-region *buffer* (:start request) (:end request)))]
     (println newbuffer)
 
+    (set! *buffer* newbuffer)
+
     ;; Trampoline instead of recur allows re-evaluation of functions from the repl
-    (trampoline #'emacs-connection-loop newbuffer input output)))
+    (trampoline #'emacs-connection-loop input output)))
 
-;; (def server-socket (ss/create-server 9881 (fn [is os]
-;;                                             (let [ird (java.io.PushbackReader. (io/reader is))
-;;                                                   owr (io/writer os)]
-;;                                               (emacs-connection-loop (buffer/make-buffer) ird owr)))))
+#_(def server-socket (ss/create-server 9881 (fn [is os]
+                                              (let [ird (java.io.PushbackReader. (io/reader is))
+                                                    owr (io/writer os)]
+                                                (binding [*buffer* (buffer/make-buffer)]
+                                                  (emacs-connection-loop ird owr))))))
 
-;; (ss/close-server server-socket)
+#_(ss/close-server server-socket)
