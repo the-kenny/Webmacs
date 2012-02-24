@@ -8,3 +8,5 @@
 (fact (insert-data (make-buffer ...any... "aaaccc") 3 "bbb") => (EmacsBuffer. ...any... "aaabbbccc"))
 
 (fact (replace-region (make-buffer ...any... "dafbbbccc") 0 3 "aaa") => (EmacsBuffer. ...any... "aaabbbccc"))
+
+(future-facts "apply-modification")

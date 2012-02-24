@@ -22,16 +22,10 @@
 
 (defn emacs-connection-loop [input output]
   (try
+    ;; TODO: Use `buffer/apply-modification'
     (let [request (parse-message (read input))
           [op name & req-rest] request
-          newbuffer (case op
-                      :buffer-data (let [[length data] req-rest]
-                                     (assoc *buffer*
-                                       :filename name
-                                       :contents data))
-                      :insert (let [[start _ data] req-rest] (buffer/insert-data *buffer* start data))
-                      :replace (let [[start end data] req-rest] (buffer/replace-region *buffer* start end data))
-                      :delete (let [[start end] req-rest] (buffer/delete-region *buffer* start end)))]
+          newbuffer (buffer/apply-modification *buffer* request)]
       (println newbuffer)
 
       (publishers/buffer-changed! newbuffer request)

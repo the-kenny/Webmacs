@@ -21,4 +21,15 @@
 (defn replace-region [buffer from to data]
   (let [before (subs (:contents buffer) 0 from)
         after (subs (:contents buffer) to)]
-   (assoc buffer :contents (str before data after))))
+    (assoc buffer :contents (str before data after))))
+
+(defn apply-modification [buffer modification]
+  (let [[op name & req-rest] modification]
+    (case op
+      :buffer-data (let [[length data] req-rest]
+                     (assoc buffer
+                       :filename name
+                       :contents data))
+      :insert (let [[start _ data] req-rest] (insert-data buffer start data))
+      :replace (let [[start end data] req-rest] (replace-region buffer start end data))
+      :delete (let [[start end] req-rest] (delete-region buffer start end)))))
