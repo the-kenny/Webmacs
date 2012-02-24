@@ -2,8 +2,10 @@
 
 (defrecord EmacsBuffer [filename contents])
 
-(defn make-buffer [filename contents]
-  (EmacsBuffer. filename contents))
+(defn make-buffer
+  ([] (make-buffer nil nil))
+  ([filename] (make-buffer filename nil))
+  ([filename contents] (EmacsBuffer. filename contents)))
 
 (defn delete-region [buffer from to]
   (let [before (subs (:contents buffer) 0 from)
