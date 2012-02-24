@@ -37,7 +37,7 @@
 (defmethod modification-dispatch :replace [buffer [op name & req-rest]]
   (let [[start end data] req-rest] (replace-region buffer start end data)))
 
-(defmethod modification-dispatch :replace [buffer [op name & req-rest]]
+(defmethod modification-dispatch :delete [buffer [op name & req-rest]]
   (let [[start end] req-rest] (delete-region buffer start end)))
 
 (defn apply-modification [buffer modification]
