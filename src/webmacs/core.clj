@@ -8,7 +8,7 @@
     (let [op (first term)]
       (case op
         (insert replace) (let [[_ start end data] term]
-                           (let [decoded (String. (Base64/decodeBase64 ^String data))]
+                           (let [decoded (String. (Base64/decodeBase64 ^String data) "utf-8")]
                              {:type (keyword op)
                                     :start start
                                     :end end
@@ -17,7 +17,7 @@
                         :start start
                         :end end})
         buffer-data (let [[_ length name data] term
-                          decoded (String. (Base64/decodeBase64 ^String data))]
+                          decoded (String. (Base64/decodeBase64 ^String data) "utf-8")]
                       (assert (= (count decoded) length))
                       {:type :buffer-data
                        :name name

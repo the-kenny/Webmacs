@@ -1,12 +1,15 @@
+(defun webmacs-encode-string (string)
+  (base64-encode-string (encode-coding-string string 'utf-8) 'no-newline))
+
 (defun webmacs-generate-change-query (change-start change-end pre-change-length)
   (cond
    ((= start end) (list 'delete start (+ start length)))
-   ((= 0 length) (list 'insert start end (buffer-substring start end)))
-   (t (list 'replace start end (base64-encode-string (buffer-substring start end))))))
+   ((= 0 length) (list 'insert start end (webmacs-encode-string (buffer-substring start end))))
+   (t (list 'replace start end (webmacs-encode-string (buffer-substring start end))))))
 
 (defun webmacs-generate-buffer-data (&optional buffer)
   (with-current-buffer (or buffer (current-buffer))
-    (list 'buffer-data (buffer-size) (buffer-file-name) (base64-encode-string (buffer-string) 'no-newline))))
+    (list 'buffer-data (buffer-size) (buffer-file-name) (webmacs-encode-string (buffer-string)))))
 
 (defvar webmacs-process-name "webmacs connection")
 
