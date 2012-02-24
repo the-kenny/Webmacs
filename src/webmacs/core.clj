@@ -24,8 +24,9 @@
                        :data (String. decoded)})))))
 
 (defn emacs-connection-loop [input output]
-  (println (parse-message (read input)))
-  (recur input output))
+  (println (str "" (parse-message (read input))))
+  ;; Trampoline instead of recur allows re-evaluation of functions from the repl
+  (trampoline #'emacs-connection-loop input output))
 
 (def server-socket (ss/create-server 9881 (fn [is os]
                                             (let [ird (java.io.PushbackReader. (io/reader is))
