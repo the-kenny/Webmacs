@@ -23,13 +23,23 @@
         after (subs (:contents buffer) to)]
     (assoc buffer :contents (str before data after))))
 
-(defn apply-modification [buffer modification]
-  (let [[op name & req-rest] modification]
-    (case op
-      :buffer-data (let [[length data] req-rest]
+(defmulti ^:private modification-dispatch #(first %2))
+
+(defmethod modification-dispatch :buffer-data [buffer [op name & req-rest]]
+  (let [[length data] req-rest]
                      (assoc buffer
                        :filename name
-                       :contents data))
-      :insert (let [[start _ data] req-rest] (insert-data buffer start data))
-      :replace (let [[start end data] req-rest] (replace-region buffer start end data))
-      :delete (let [[start end] req-rest] (delete-region buffer start end)))))
+                       :contents data)))
+
+(defmethod modification-dispatch :insert [buffer [op name & req-rest]]
+  (let [[start _ data] req-rest] (insert-data buffer start data)))
+
+(defmethod modification-dispatch :replace [buffer [op name & req-rest]]
+  (let [[start end data] req-rest] (replace-region buffer start end data)))
+
+(defmethod modification-dispatch :replace [buffer [op name & req-rest]]
+  (let [[start end] req-rest] (delete-region buffer start end)))
+
+(defn apply-modification [buffer modification]
+  (let [[op name & req-rest] modification]
+    (modification-dispatch buffer modification)))
