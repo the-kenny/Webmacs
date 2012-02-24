@@ -8,28 +8,28 @@
   (when (and (sequential? term) (>= (count term) 3))
     (let [op (first term)]
       (case op
-        (insert replace) (let [[_ start end data] term]
+        (insert replace) (let [[_ buffer start end data] term]
                            (let [decoded (String. (Base64/decodeBase64 ^String data) "utf-8")]
-                             [(keyword op) (dec start) (dec end) decoded]))
-        delete (let [[_ start end] term] [:delete (dec start) (dec end)])
-        buffer-data (let [[_ length name data] term
+                             [(keyword op) buffer (dec start) (dec end) decoded]))
+        delete (let [[_ buffer start end] term] [:delete buffer (dec start) (dec end)])
+        buffer-data (let [[_ buffer length data] term
                           decoded (String. (Base64/decodeBase64 ^String data) "utf-8")]
                       (assert (= (count decoded) length)) ;TODO: Better error checking
-                      [:buffer-data name length decoded])))))
+                      [:buffer-data buffer length decoded])))))
 
 (def ^:dynamic *buffer* nil)
 
 (defn emacs-connection-loop [input output]
   (try
    (let [request (parse-message (read input))
-         _ (println request)
-         newbuffer (case (first request)
+         [op name & req-rest] request
+         newbuffer (case op
                      :buffer-data (assoc *buffer*
                                     :filename (:name request)
                                     :contents (:data request))
-                     :insert (let [[_ start _ data] request] (buffer/insert-data *buffer* start data))
-                     :replace (let [[_ start end data] request] (buffer/replace-region *buffer* start end data))
-                     :delete (let [[_ start end] request] (buffer/delete-region *buffer* start end)))]
+                     :insert (let [[start _ data] req-rest] (buffer/insert-data *buffer* start data))
+                     :replace (let [[start end data] req-rest] (buffer/replace-region *buffer* start end data))
+                     :delete (let [[start end] req-rest] (buffer/delete-region *buffer* start end)))]
      (println newbuffer)
 
      (set! *buffer* newbuffer)

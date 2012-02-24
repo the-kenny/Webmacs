@@ -5,8 +5,10 @@
 (def encoded "RlVCQVI=")
 (def decoded "FUBAR")
 
+(def buffer "fubar.org")
+
 (facts
-  (parse-message (list 'insert 1 3 encoded)) => [:insert 0 2 decoded]
-  (parse-message (list 'replace 1 6 encoded)) => [:replace 0 5 decoded]
-  (parse-message (list 'delete 1 6)) => [:delete 0 5]
-  (parse-message (list 'buffer-data 5 "fubar.org" encoded)) => [:buffer-data "fubar.org" (count decoded) decoded])
+  (parse-message (list 'insert buffer 1 3 encoded)) => [:insert buffer 0 2 decoded]
+  (parse-message (list 'replace buffer 1 6 encoded)) => [:replace buffer 0 5 decoded]
+  (parse-message (list 'delete buffer 1 6)) => [:delete buffer 0 5]
+  (parse-message (list 'buffer-data "fubar.org" 5 encoded)) => [:buffer-data buffer (count decoded) decoded])
