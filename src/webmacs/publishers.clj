@@ -27,4 +27,10 @@
 
   (let [change-channel (get-change-channel (:filename buffer))]
     (when (and change-channel (not (closed? change-channel)))
-      (enqueue change-channel change))))
+      (enqueue change-channel change)
+      change)))
+
+(defn reset-publishers! []
+  ;; TODO: Send message to web-clients
+  (reset! buffer-channels {})
+  (reset! buffers {}))
