@@ -6,9 +6,9 @@
                  [noir "1.2.2"]
                  [noir-async "0.1.2"]]
   :dev-dependencies [[midje "1.3.1"]]
-  :plugins [[lein-cljsbuild "0.0.14"]]
-  :cljsbuild {:source-path "src-cljs"
-              :crossovers [webmacs.buffer]
-              :compiler {:output-to "resources/public/js/main.js"
-                         :optimizations :whitespace
-                         :pretty-print true}})
+  :plugins [[lein-cljsbuild "0.1.0"]]
+  :cljsbuild {:crossovers [webmacs.buffer],
+              :builds [{:source-path "src-cljs/",
+                        :compiler {:output-to "resources/public/js/main.js",
+                                   :optimizations :whitespace,
+                                   :pretty-print true}}]})

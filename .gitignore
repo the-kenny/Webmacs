@@ -9,3 +9,5 @@
 /resources/public/js/main.js
 .clojurescript-output/
 .lein-plugins/
+.lein-cljsbuild-*/
+crossover-cljs/
