@@ -21,25 +21,22 @@
 (def ^:dynamic *buffer* nil)
 
 (defn emacs-connection-loop [input output]
-  (try
-    ;; TODO: Use `buffer/apply-modification'
-    (let [request (parse-message (read input))
-          [op name & req-rest] request
-          newbuffer (buffer/apply-modification *buffer* request)]
-      (println newbuffer)
+  (let [request (parse-message (read input))
+        [op name & req-rest] request
+        newbuffer (buffer/apply-modification *buffer* request)]
 
-      (publishers/buffer-changed! newbuffer request)
-      (set! *buffer* newbuffer)
+    (publishers/buffer-changed! newbuffer request)
+    (set! *buffer* newbuffer)
 
-      ;; Trampoline instead of recur allows re-evaluation of functions from the repl
-      (trampoline #'emacs-connection-loop input output))
-    (catch java.net.SocketException e
-      (println "Got SocketException:" (.getMessage e) "Exiting."))))
+    (recur input output)))
 
 #_(def server-socket (ss/create-server 9881 (fn [is os]
                                               (let [ird (java.io.PushbackReader. (io/reader is))
                                                     owr (io/writer os)]
-                                                (binding [*buffer* (buffer/make-buffer)]
-                                                  (emacs-connection-loop ird owr))))))
+                                                (try
+                                                  (binding [*buffer* (buffer/make-buffer)]
+                                                    (emacs-connection-loop ird owr))
+                                                  (catch java.net.SocketException e
+                                                    (println "Got SocketException:" (.getMessage e) "Exiting.")))))))
 
 #_(ss/close-server server-socket)
