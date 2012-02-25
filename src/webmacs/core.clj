@@ -2,7 +2,8 @@
   (:use [server.socket :as ss]
         [clojure.java.io :as io]
         [webmacs.buffer :as buffer]
-        [webmacs.publishers :as publishers])
+        [webmacs.publishers :as publishers]
+        [webmacs.server :as web])
   (:import [org.apache.commons.codec.binary Base64]))
 
 (defn parse-message [term]
@@ -30,13 +31,20 @@
 
     (recur input output)))
 
-#_(def server-socket (ss/create-server 9881 (fn [is os]
-                                              (let [ird (java.io.PushbackReader. (io/reader is))
-                                                    owr (io/writer os)]
-                                                (try
-                                                  (binding [*buffer* (buffer/make-buffer)]
-                                                    (emacs-connection-loop ird owr))
-                                                  (catch java.net.SocketException e
-                                                    (println "Got SocketException:" (.getMessage e) "Exiting.")))))))
+(defn open-server-socket [port]
+  (ss/create-server port
+                    (fn [is os]
+                      (let [ird (java.io.PushbackReader. (io/reader is))
+                            owr (io/writer os)]
+                        (try
+                          (binding [*buffer* (buffer/make-buffer)]
+                            (emacs-connection-loop ird owr))
+                          (catch java.net.SocketException e
+                            (println "Got SocketException:" (.getMessage e) "Exiting.")))))))
 
+#_(def server-socket (open-server-socket 9881))
 #_(ss/close-server server-socket)
+
+(defn -main [& args]
+  (apply web/start-server args)
+  (open-server-socket 9881))
