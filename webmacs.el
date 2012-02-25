@@ -1,3 +1,10 @@
+;;; webmacs.el --- webmacs is a package to publish buffers live on a website
+
+;;; Commentary:
+;;
+
+;;; Code:
+
 (defvar webmacs-buffer-name "*webmacs*")
 (defvar webmacs-process-name "webmacs connection")
 
@@ -5,13 +12,19 @@
 (defvar webmacs-port 9881)
 
 (defun webmacs-open-connection (host port)
+  "Open a connection to the webmacs server running on HOST at PORT.
+This is needed prior running command `webmacs-mode' for webmacs to be able to
+communicate with the server.
+Closes other open connections if any.
+
+Argument HOST The hostname of the machine running the webmacs server.
+Argument PORT The listen port of the webmacs server."
   (interactive (list (read-from-minibuffer "Host: " webmacs-host)
                      (read-from-minibuffer "Port: " (format "%d" webmacs-port)
                                            nil t)))
   (open-network-stream webmacs-process-name "*webmacs*" host port))
 
 (defun webmacs-publish-buffer (buffer-name)
-  (interactive "b")
   (let ((buffer (get-buffer buffer-name)))
     ;; (add-to-list 'after-change-functions #'webmacs-after-change)
     (process-send-string webmacs-buffer-name (format "%S" (webmacs-generate-buffer-data buffer)))))
@@ -35,7 +48,16 @@
     (message "No webmacs connection. Please open it using `webmacs-open-connection'")))
 
 (define-minor-mode webmacs-mode
-  ""
+  "Toggle webmacs publishing.
+With no argument, this command toggles the mode.
+Non-null prefix argument turns on the mode.
+Null prefix argument turns off the mode.
+
+When webmacs-mode is enabled in a buffer, any changes are sent to a
+server and can be watched in real time using a websocket capable
+browser.
+This command assumes there is already an open connection opened via
+command `webmacs-open-connection'."
   :init-value nil
   :lighter " webmacs"
   :group 'webmacs
@@ -50,13 +72,6 @@
         (webmacs-publish-buffer (buffer-name))))
     (remove-hook 'after-change-functions #'webmacs-after-change 'local)))
 
-;; (open-network-stream webmacs-process-name "*webmacs*" "localhost" 9881)
-
-;; (process-send-string "*webmacs*" (format "%S" (webmacs-generate-buffer-data)))
-
-;; (md5 (get-buffer "footest"))
-
-;; (add-to-list 'after-change-functions #'webmacs-after-change)
-;; (setq-default after-change-functions '())
-
 (provide 'webmacs)
+
+;;; webmacs.el ends here
