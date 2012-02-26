@@ -22,6 +22,8 @@
     ;; Then start piping everything from `change-channel'
     (siphon chan client-channel)))
 
+(defn remove-client! [client-channel] nil)
+
 (defn buffer-changed! [buffer change]
   (swap! buffers assoc (:filename buffer) buffer)
 

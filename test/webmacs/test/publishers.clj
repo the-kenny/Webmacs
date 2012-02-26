@@ -33,4 +33,6 @@
 
   (fact
     (buffer-changed! buf [:replace +name+ 0 1 "b"])
-    @change-atom => [:replace +name+ 0 1 "b"]))
+    @change-atom => [:replace +name+ 0 1 "b"])
+
+  (future-fact "remove-client!"))
