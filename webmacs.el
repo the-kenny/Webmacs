@@ -22,7 +22,10 @@ Argument PORT The listen port of the webmacs server."
   (interactive (list (read-from-minibuffer "Host: " webmacs-host)
                      (read-from-minibuffer "Port: " (format "%d" webmacs-port)
                                            nil t)))
-  (open-network-stream webmacs-process-name "*webmacs*" host port))
+  (make-network-process :name webmacs-process-name
+                        :buffer webmacs-buffer-name
+                        :host host
+                        :service port))
 
 (defun webmacs-publish-buffer (buffer-name)
   (let ((buffer (get-buffer buffer-name)))
