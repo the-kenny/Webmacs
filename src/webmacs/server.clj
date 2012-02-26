@@ -9,9 +9,6 @@
             [webmacs.publishers :as publishers]
             [webmacs.buffer :as buffer]))
 
-(defpage "/welcome" []
-  "Welcome tofffav Noir!")
-
 (defpage "/emacs/:name" {:keys [name]}
   (html5 [:head
           [:title "Emacs: " name]
