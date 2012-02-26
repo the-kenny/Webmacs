@@ -31,6 +31,7 @@
 
 (def server (atom nil))
 
+;;; TODO: Move the & m args
 (defn start-server [& m]
   (let [mode (keyword (or (first m) :dev))
         port (Integer. (get (System/getenv) "PORT" "3000"))
