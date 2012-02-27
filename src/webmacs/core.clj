@@ -20,16 +20,9 @@
                       (assert (= (count decoded) length)) ;TODO: Better error checking
                       [:buffer-data buffer length decoded])))))
 
-(def ^:dynamic *buffer* nil)
-
 (defn emacs-connection-loop [input output]
-  (let [request (parse-message (read input))
-        [op name & req-rest] request
-        newbuffer (buffer/apply-modification *buffer* request)]
-
-    (publishers/buffer-changed! newbuffer request)
-    (set! *buffer* newbuffer)
-
+  (let [request (parse-message (read input))]
+    (publishers/buffer-changed! request)
     (recur input output)))
 
 (defn open-server-socket [port]
@@ -38,8 +31,7 @@
                       (let [ird (java.io.PushbackReader. (io/reader is))
                             owr (io/writer os)]
                         (try
-                          (binding [*buffer* (buffer/make-buffer)]
-                            (emacs-connection-loop ird owr))
+                          (emacs-connection-loop ird owr)
                           (catch java.net.SocketException e
                             (println "Got SocketException:" (.getMessage e) "Exiting.")))))))
 
