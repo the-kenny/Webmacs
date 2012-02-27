@@ -11,4 +11,5 @@
               :builds [{:source-path "src-cljs/",
                         :compiler {:output-to "resources/public/js/main.js",
                                    :optimizations :whitespace,
-                                   :pretty-print true}}]})
+                                   :pretty-print true}}]}
+  :main webmacs.core)
