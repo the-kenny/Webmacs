@@ -21,7 +21,11 @@
                       [:buffer-data buffer length decoded])))))
 
 (defn emacs-connection-loop [input output]
-  (let [request (parse-message (read input))]
+  (let [request (parse-message (read input))
+        [op name & req-rest] request]
+    (when (= op :buffer-data)
+      (publishers/store-buffer! (make-buffer name)))
+
     (publishers/buffer-changed! request)
     (recur input output)))
 
