@@ -33,13 +33,18 @@
 
 (defn remove-client! [client-channel] nil)
 
-(defn buffer-changed! [buffer change]
-  (swap! buffers assoc (:filename buffer) buffer)
+(defn buffer-changed! [change]
+  (let [[_ name & _] change]
+    (assert (get-buffer name) "Buffer must be initialized")
 
-  (let [change-channel (get-change-channel (:filename buffer))]
-    (when (and change-channel (not (closed? change-channel)))
-      (enqueue change-channel change)
-      change)))
+    (swap! buffers update-in [name] apply-modification change)
+
+    (let [change-channel (get-change-channel name)
+          newbuf (get-buffer name)]
+      (when (and change-channel (not (closed? change-channel)))
+        (enqueue change-channel change)
+        change)
+      newbuf)))
 
 (defn reset-publishers! []
   ;; TODO: Send message to web-clients

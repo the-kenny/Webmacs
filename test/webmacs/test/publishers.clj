@@ -18,11 +18,11 @@
   (fact (get-change-channel +name+) => nil)
 
   (fact
-    (buffer-changed! (make-buffer +name+) ...any...) => nil)
+    (buffer-changed! [:insert +name+ ...any...]) => (throws AssertionError))
 
   (fact
-    (add-client! +name+ (channel)) => true
-    (buffer-changed! (make-buffer +name+) ...any...) => ...any...))
+    (store-buffer! (make-buffer +name+ "abc"))
+    (buffer-changed! [:insert +name+ 0 1 "x"]) => (make-buffer +name+ "xabc")))
 
 (let [cchan (permanent-channel)
       change-atom (atom nil)

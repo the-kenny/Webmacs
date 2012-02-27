@@ -10,6 +10,7 @@
   (when (and (sequential? term) (>= (count term) 3))
     (let [op (first term)]
       (case op
+        ;; TODO: :insert should only contain `at' and not `start' and `end'
         (insert replace) (let [[_ buffer start end data] term]
                            (let [decoded (String. (Base64/decodeBase64 ^String data) "utf-8")]
                              [(keyword op) buffer (dec start) (dec end) decoded]))
