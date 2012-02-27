@@ -6,6 +6,15 @@
 (def buffer-channels (atom {}))          ;maps buffer-names to lamina channels
 (def buffers (atom {}))
 
+(defn get-buffer [name]
+  (get @buffers name))
+
+(defn store-buffer! [buffer]
+  (swap! buffers assoc (:filename buffer) buffer))
+
+(defn remove-buffer! [name]
+  (swap! buffers dissoc name))
+
 (defn get-change-channel [buffer-name]
   (get @buffer-channels buffer-name))
 
@@ -16,7 +25,7 @@
       (swap! buffer-channels assoc buffer-name (channel))))
 
   (let [chan (get-change-channel buffer-name)
-        buf (get @buffers buffer-name)]
+        buf (get-buffer buffer-name)]
     ;; First, send whole buffer
     (enqueue client-channel [:buffer-data buffer-name (count (:contents buf)) (:contents buf)])
     ;; Then start piping everything from `change-channel'

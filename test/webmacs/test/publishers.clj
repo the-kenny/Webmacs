@@ -7,6 +7,14 @@
 (def +name+ "foo.org")
 
 (against-background [(before :facts (reset-publishers!))]
+  (facts
+    (let [buf (make-buffer +name+ "text")]
+      (get-buffer +name+)     => nil
+      (store-buffer! buf)     => any
+      (get-buffer +name+)     => buf
+      (remove-buffer! +name+) => any
+      (get-buffer +name+)     => nil))
+
   (fact (get-change-channel +name+) => nil)
 
   (fact
