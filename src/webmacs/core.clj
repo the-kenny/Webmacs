@@ -4,7 +4,8 @@
         [webmacs.buffer :as buffer]
         [webmacs.publishers :as publishers]
         [webmacs.server :as web])
-  (:import [org.apache.commons.codec.binary Base64]))
+  (:import [org.apache.commons.codec.binary Base64])
+  (:gen-class :main true))
 
 (defn parse-message [term]
   (when (and (sequential? term) (>= (count term) 3))
