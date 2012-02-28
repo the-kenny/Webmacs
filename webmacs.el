@@ -11,6 +11,11 @@
 (defvar webmacs-host "localhost")
 (defvar webmacs-port 9881)
 
+(defun webmacs-process-sentinel (process event)
+  (when (equal (process-status process) 'closed)
+    ;; TODO: Make this more visible
+    (message "Lost webmacs connection. Please reconnect using `webmacs-open-connection'")))
+
 (defun webmacs-open-connection (host port)
   "Open a connection to the webmacs server running on HOST at PORT.
 This is needed prior running command `webmacs-mode' for webmacs to be able to
@@ -22,10 +27,11 @@ Argument PORT The listen port of the webmacs server."
   (interactive (list (read-from-minibuffer "Host: " webmacs-host)
                      (read-from-minibuffer "Port: " (format "%d" webmacs-port)
                                            nil t)))
-  (make-network-process :name webmacs-process-name
-                        :buffer webmacs-buffer-name
-                        :host host
-                        :service port))
+  (let ((process (make-network-process :name webmacs-process-name
+                                :buffer webmacs-buffer-name
+                                :host host
+                                :service port)))
+    (set-process-sentinel process #'webmacs-process-sentinel)))
 
 (defun webmacs-publish-buffer (buffer-name)
   (let ((buffer (get-buffer buffer-name)))
