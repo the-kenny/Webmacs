@@ -41,11 +41,20 @@ Argument PORT The listen port of the webmacs server."
 (defun webmacs-encode-string (string)
   (base64-encode-string (encode-coding-string string 'utf-8) 'no-newline))
 
+;;; TODO: Disable narrowing if active
+;;; OR (better): Enable narrowing on the client side
 (defun webmacs-generate-change-query (change-start change-end pre-change-length)
   (cond
-   ((= start end) (list 'delete (buffer-name) start (+ start length)))
-   ((= 0 length) (list 'insert (buffer-name) start end (webmacs-encode-string (buffer-substring start end))))
-   (t (list 'replace (buffer-name) start end (webmacs-encode-string (buffer-substring start end))))))
+   ((= change-start change-end) (list 'delete (buffer-name) change-start
+                                      (+ change-start pre-change-length)))
+
+   ((= 0 pre-change-length) (list 'insert (buffer-name) change-start change-end
+                                  (webmacs-encode-string (buffer-substring change-start change-end))))
+
+   ;; `pre-change-length' chars are removed from the buffer (starting at `change-start')
+   ;; `change-start' and `change-end' specify the region of the text *after* the replacement
+   (t (list 'replace (buffer-name) change-start (+ change-start pre-change-length)
+            (webmacs-encode-string (buffer-substring change-start change-end))))))
 
 (defun webmacs-generate-buffer-data (&optional buffer)
   (with-current-buffer (or buffer (current-buffer))
