@@ -23,7 +23,7 @@
 (defn handle-open [])
 
 
-(defn open-socket [uri]
+(defn ^:export open-socket [uri]
   (let [ws (js/WebSocket. uri)]
     (set! (.-onopen ws) (fn [_] (handle-open)))
     (set! (.-onclose ws) (fn [] (handle-close)))
