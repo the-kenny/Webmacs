@@ -1,6 +1,9 @@
 (ns webmacs.publishers
-  (:use webmacs.buffer
-        lamina.core))
+  (:use [webmacs.buffer :as buffer]
+        lamina.core
+        [clojure.java.io :as io]
+         [server.socket :as ss]
+         [webmacs.message :as message]))
 
 ;;; TODO: Simplify using Broadcasts from netwars
 (def buffer-channels (atom {}))          ;maps buffer-names to lamina channels
@@ -27,6 +30,7 @@
   (let [chan (get-change-channel buffer-name)
         buf (get-buffer buffer-name)]
     ;; First, send whole buffer
+    ;; TODO: The message should be created in webmacs.message
     (enqueue client-channel [:buffer-data buffer-name (count (:contents buf)) (:contents buf)])
     ;; Then start piping everything from `change-channel'
     (siphon chan client-channel)))
@@ -37,7 +41,7 @@
   (let [[_ name & _] change]
     (assert (get-buffer name) "Buffer must be initialized")
 
-    (swap! buffers update-in [name] apply-modification change)
+    (swap! buffers update-in [name] buffer/apply-modification change)
 
     (let [change-channel (get-change-channel name)
           newbuf (get-buffer name)]
@@ -50,3 +54,24 @@
   ;; TODO: Send message to web-clients
   (reset! buffer-channels {})
   (reset! buffers {}))
+
+;;; Connection Handling
+
+(defn ^:private emacs-connection-loop [input output]
+  (let [request (message/parse (read input))
+        [op name & req-rest] request]
+    (when (= op :buffer-data)
+      (store-buffer! (make-buffer name)))
+
+    (buffer-changed! request)
+    (recur input output)))
+
+(defn listen [port]
+  (ss/create-server port
+                    (fn [is os]
+                      (let [ird (java.io.PushbackReader. (io/reader is))
+                            owr (io/writer os)]
+                        (try
+                          (emacs-connection-loop ird owr)
+                          (catch java.net.SocketException e
+                            (println "Got SocketException:" (.getMessage e) "Exiting.")))))))

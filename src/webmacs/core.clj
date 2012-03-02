@@ -1,48 +1,9 @@
 (ns webmacs.core
-  (:use [server.socket :as ss]
-        [clojure.java.io :as io]
-        [webmacs.buffer :as buffer]
-        [webmacs.publishers :as publishers]
+  (:use [webmacs.publishers :as publishers]
         [webmacs.server :as web])
-  (:import [org.apache.commons.codec.binary Base64])
-  (:gen-class :main true))
+  (:gen-class))
 
-(defn parse-message [term]
-  (when (and (sequential? term) (>= (count term) 3))
-    (let [op (first term)]
-      (case op
-        ;; TODO: :insert should only contain `at' and not `start' and `end'
-        (insert replace) (let [[_ buffer start end data] term]
-                           (let [decoded (String. (Base64/decodeBase64 ^String data) "utf-8")]
-                             [(keyword op) buffer (dec start) (dec end) decoded]))
-        delete (let [[_ buffer start end] term] [:delete buffer (dec start) (dec end)])
-        buffer-data (let [[_ buffer length data] term
-                          decoded (String. (Base64/decodeBase64 ^String data) "utf-8")]
-                      (assert (= (count decoded) length)) ;TODO: Better error checking
-                      [:buffer-data buffer length decoded])))))
-
-(defn emacs-connection-loop [input output]
-  (let [request (parse-message (read input))
-        [op name & req-rest] request]
-    (when (= op :buffer-data)
-      (publishers/store-buffer! (make-buffer name)))
-
-    (publishers/buffer-changed! request)
-    (recur input output)))
-
-(defn open-server-socket [port]
-  (ss/create-server port
-                    (fn [is os]
-                      (let [ird (java.io.PushbackReader. (io/reader is))
-                            owr (io/writer os)]
-                        (try
-                          (emacs-connection-loop ird owr)
-                          (catch java.net.SocketException e
-                            (println "Got SocketException:" (.getMessage e) "Exiting.")))))))
-
-#_(def server-socket (open-server-socket 9881))
-#_(ss/close-server server-socket)
 
 (defn -main [& args]
   (apply web/start-server args)
-  (open-server-socket 9881))
+  (publishers/listen 9881))
