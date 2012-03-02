@@ -2,8 +2,8 @@
   (:use [webmacs.buffer :as buffer]
         lamina.core
         [clojure.java.io :as io]
-         [server.socket :as ss]
-         [webmacs.message :as message]))
+        [server.socket :as ss]
+        [webmacs.message :as message]))
 
 ;;; TODO: Simplify using Broadcasts from netwars
 (def buffer-channels (atom {}))          ;maps buffer-names to lamina channels
@@ -13,7 +13,7 @@
   (get @buffers name))
 
 (defn store-buffer! [buffer]
-  (swap! buffers assoc (:filename buffer) buffer))
+  (swap! buffers assoc (:name buffer) buffer))
 
 (defn remove-buffer! [name]
   (swap! buffers dissoc name))

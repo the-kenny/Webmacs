@@ -1,12 +1,11 @@
 (ns webmacs.buffer)
 
-;;; TODO: Replace `filename' with `name'
-(defrecord EmacsBuffer [filename contents])
+(defrecord EmacsBuffer [name contents])
 
 (defn make-buffer
   ([] (make-buffer nil nil))
-  ([filename] (make-buffer filename nil))
-  ([filename contents] (EmacsBuffer. filename contents)))
+  ([name] (make-buffer name nil))
+  ([name contents] (EmacsBuffer. name contents)))
 
 (defn delete-region [buffer from to]
   (let [before (subs (:contents buffer) 0 from)
@@ -28,7 +27,7 @@
 (defmethod modification-dispatch :buffer-data [buffer [op name & req-rest]]
   (let [[length data] req-rest]
                      (assoc buffer
-                       :filename name
+                       :name name
                        :contents data)))
 
 (defmethod modification-dispatch :insert [buffer [op name & req-rest]]
