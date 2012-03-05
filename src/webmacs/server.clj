@@ -12,9 +12,12 @@
 (defpage "/emacs/:name" {:keys [name]}
   (html5 [:head
           [:title "Emacs: " name]
-          (include-js "/js/main.js")]
+          (include-js "/js/main.js")
+          (include-css "/css/main.css")]
          [:body
-          [:pre {:id "buffer-contents"}]
+          [:div
+           [:pre {:id "buffer-contents"}]
+           [:pre {:id "mode-line"}]]
           (javascript-tag ;; "(open-socket \"ws://localhost:3000/sockets/\")"
            (str "webmacs.core.open_socket(\"ws://\"+window.location.host+\"/sockets/" name "\")"))]))
 

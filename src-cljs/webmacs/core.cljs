@@ -16,6 +16,7 @@
   (let [obj (reader/read-string (.-data socket-event))]
     (.log js/console (pr-str obj))
     (set! *buffer* (buffer/apply-modification *buffer* obj))
+    (dom/setTextContent (dom/getElement "mode-line") (str "Buffer: " (:name *buffer*)))
     ;; TODO: Buffer changed
     (dom/setTextContent (dom/getElement "buffer-contents") (:contents *buffer*))))
 
