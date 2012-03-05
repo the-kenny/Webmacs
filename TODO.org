@@ -1,0 +1,11 @@
+* First Release
+  - [ ] Simpler way to send key-value data (for buffer-data: major-mode)
+  - [ ] Nicer mode-line (size, major-mode, percentage)
+  - [ ] Scroll to current cursor position
+
+* Later
+  - [ ] Narrowing (needs hacks on Emacs-side, no hooks :( )
+  - [ ] Watch multiple buffers in splitscreen
+  - [ ] List of published buffers
+  - [ ] Authentication
+  - [ ] font-lock
