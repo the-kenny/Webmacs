@@ -48,7 +48,7 @@ Argument PORT The listen port of the webmacs server."
    ((= change-start change-end) (list 'delete (buffer-name) change-start
                                       (+ change-start pre-change-length)))
 
-   ((= 0 pre-change-length) (list 'insert (buffer-name) change-start change-end
+   ((= 0 pre-change-length) (list 'insert (buffer-name) change-start
                                   (webmacs-encode-string (buffer-substring change-start change-end))))
 
    ;; `pre-change-length' chars are removed from the buffer (starting at `change-start')

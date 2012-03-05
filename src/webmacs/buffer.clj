@@ -31,7 +31,7 @@
                        :contents data)))
 
 (defmethod modification-dispatch :insert [buffer [op name & req-rest]]
-  (let [[start _ data] req-rest] (insert-data buffer start data)))
+  (let [[at data] req-rest] (insert-data buffer at data)))
 
 (defmethod modification-dispatch :replace [buffer [op name & req-rest]]
   (let [[start end data] req-rest] (replace-region buffer start end data)))

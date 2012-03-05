@@ -22,4 +22,4 @@
 
   (fact
     (store-buffer! (make-buffer +name+ "abc"))
-    (buffer-changed! [:insert +name+ 0 1 "x"]) => (make-buffer +name+ "xabc")))
+    (buffer-changed! [:insert +name+ 0 "x"]) => (make-buffer +name+ "xabc")))
