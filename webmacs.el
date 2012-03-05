@@ -65,6 +65,10 @@ Argument PORT The listen port of the webmacs server."
     (process-send-string webmacs-buffer-name (format "%S" (webmacs-generate-change-query start end length)))
     (message "No webmacs connection. Please open it using `webmacs-open-connection'")))
 
+(defun webmacs-major-mode-changed ()
+  (if (processp (get-buffer-process webmacs-buffer-name))
+      (process-send-string webmacs-buffer-name (format "%S" (list 'mode-change (buffer-name) major-mode)))))
+
 (define-minor-mode webmacs-mode
   "Toggle webmacs publishing.
 With no argument, this command toggles the mode.
@@ -87,8 +91,10 @@ command `webmacs-open-connection'."
         ;; (if (yes-or-no-p "No webmacs connection. Open one? ")
         ;;     (call-interactively #'webmacs-open-connection))
         (add-hook 'after-change-functions #'webmacs-after-change nil 'local)
+        (add-hook 'change-major-mode-hook #'webmacs-major-mode-changed 'local)
         (webmacs-publish-buffer (buffer-name))))
-    (remove-hook 'after-change-functions #'webmacs-after-change 'local)))
+    (remove-hook 'after-change-functions #'webmacs-after-change 'local)
+    (remove-hook 'change-major-mode-hook #'webmacs-major-mode-changed 'local)))
 
 (provide 'webmacs)
 

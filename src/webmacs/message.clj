@@ -1,7 +1,7 @@
 (ns webmacs.message
   (:import [org.apache.commons.codec.binary Base64]))
 
-(defmulti parse first)
+(defmulti parse first :default :default)
 
 (defmethod parse 'insert [[_ buffer at data]]
   (let [decoded (String. (Base64/decodeBase64 ^String data) "utf-8")]
@@ -18,3 +18,6 @@
   (let [decoded (String. (Base64/decodeBase64 ^String data) "utf-8")]
     (assert (= (count decoded) length)) ;TODO: Better error checking
     [:buffer-data buffer length decoded]))
+
+(defmethod parse :default [[op buffer & rest]]
+  (concat [(keyword op) buffer] rest))
