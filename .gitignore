@@ -11,3 +11,4 @@
 .lein-plugins/
 .lein-cljsbuild-*/
 crossover-cljs/
+/target/
