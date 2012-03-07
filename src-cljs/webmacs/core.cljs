@@ -2,11 +2,12 @@
   (:require [webmacs.buffer :as buffer]
             [webmacs.display :as display]
             [cljs.reader :as reader]
-            [clojure.browser.dom :as dom]))
+            [clojure.browser.dom :as dom]
+            [clojure.string :as string]))
 
-(def ^:dynamic *socket* nil)
-(def ^:dynamic *buffer* nil)
-
+(def *socket* nil)
+(def *buffer* nil)
+(def *buffer-content-lines* nil)
 
 (defn send-data [data]
   (binding [*print-meta* true]
@@ -16,10 +17,12 @@
 (defn handle-socket-message [socket-event]
   (let [obj (reader/read-string (.-data socket-event))]
     (set! *buffer* (buffer/apply-modification *buffer* obj))
+    (set! *buffer-content-lines* (string/split-lines (:contents *buffer*)))
+
     (dom/set-text (dom/get-element :mode-line) (str "Buffer: " (:name *buffer*)))
 
-    (dom/replace-node (dom/get-element :line-numbers) (display/make-line-count (:contents *buffer*)))
-    (dom/replace-node (dom/get-element :buffer-contents) (display/make-buffer-contents (:contents *buffer*)))))
+    (dom/replace-node (dom/get-element :line-numbers) (display/make-line-count (count *buffer-content-lines*)))
+    (dom/replace-node (dom/get-element :buffer-contents) (display/make-buffer-contents *buffer-content-lines*))))
 
 (defn handle-close [])
 (defn handle-open [])
