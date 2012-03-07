@@ -12,9 +12,19 @@
 (defpage "/emacs/:name" {:keys [name]}
   (html5 [:head
           [:title "Emacs: " name]
-          (include-js "/js/main.js")]
+          (include-js "/js/main.js")
+          (include-css "/css/main.css")]
          [:body
-          [:pre {:id "buffer-contents"}]
+          [:div
+           [:table {:class "code-table"}
+            [:tbody
+             [:tr
+              [:td
+               [:pre {:id "line-numbers"}]]
+              [:td {:width "100%"}
+               [:pre {:id "buffer-contents"}]]]]]
+           ;; [:pre {:id "buffer-contents"}]
+           [:pre {:id "mode-line"}]]
           (javascript-tag ;; "(open-socket \"ws://localhost:3000/sockets/\")"
            (str "webmacs.core.open_socket(\"ws://\"+window.location.host+\"/sockets/" name "\")"))]))
 
@@ -34,7 +44,7 @@
 ;;; TODO: Move the & m args
 (defn start-server [& m]
   (let [mode (keyword (or (first m) :dev))
-        port (Integer. (get (System/getenv) "PORT" "3000"))
+        port (Integer. (get (System/getenv) "WEB_PORT" "3000"))
         noir-handler (server/gen-handler {:mode mode})]
     (reset! server (start-http-server
                     (wrap-ring-handler noir-handler)

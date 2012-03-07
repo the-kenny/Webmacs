@@ -1,11 +1,13 @@
 (ns webmacs.core
   (:require [webmacs.buffer :as buffer]
+            [webmacs.display :as display]
             [cljs.reader :as reader]
-            [goog.dom :as dom]))
+            [clojure.browser.dom :as dom]
+            [clojure.string :as string]))
 
-(def ^:dynamic *socket* nil)
-(def ^:dynamic *buffer* nil)
-
+(def *socket* nil)
+(def *buffer* nil)
+(def *buffer-content-lines* nil)
 
 (defn send-data [data]
   (binding [*print-meta* true]
@@ -14,10 +16,13 @@
 ;;; Connnection Stuff
 (defn handle-socket-message [socket-event]
   (let [obj (reader/read-string (.-data socket-event))]
-    (.log js/console (pr-str obj))
     (set! *buffer* (buffer/apply-modification *buffer* obj))
-    ;; TODO: Buffer changed
-    (dom/setTextContent (dom/getElement "buffer-contents") (:contents *buffer*))))
+    (set! *buffer-content-lines* (string/split-lines (:contents *buffer*)))
+
+    (dom/set-text (dom/get-element :mode-line) (str "Buffer: " (:name *buffer*)))
+
+    (display/update-line-count (dom/get-element :line-numbers) (count *buffer-content-lines*))
+    (display/update-buffer-contents (dom/get-element :buffer-contents) *buffer-content-lines*)))
 
 (defn handle-close [])
 (defn handle-open [])

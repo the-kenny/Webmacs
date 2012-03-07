@@ -22,7 +22,7 @@
         after (subs (:contents buffer) to)]
     (assoc buffer :contents (str before data after))))
 
-(defmulti ^:private modification-dispatch #(first %2))
+(defmulti ^:private modification-dispatch #(first %2) :default :default)
 
 (defmethod modification-dispatch :buffer-data [buffer [op name & req-rest]]
   (let [[length data] req-rest]
@@ -31,13 +31,16 @@
                        :contents data)))
 
 (defmethod modification-dispatch :insert [buffer [op name & req-rest]]
-  (let [[start _ data] req-rest] (insert-data buffer start data)))
+  (let [[at data] req-rest] (insert-data buffer at data)))
 
 (defmethod modification-dispatch :replace [buffer [op name & req-rest]]
   (let [[start end data] req-rest] (replace-region buffer start end data)))
 
 (defmethod modification-dispatch :delete [buffer [op name & req-rest]]
   (let [[start end] req-rest] (delete-region buffer start end)))
+
+(defmethod modification-dispatch :default [buffer request]
+  (println "Unknown request: " request))
 
 (defn apply-modification [buffer modification]
   (let [[op name & req-rest] modification]
