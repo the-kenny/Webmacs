@@ -12,5 +12,5 @@
   :profiles {:dev {:dependencies [[midje "1.3.1"]]}}
   :main webmacs.core
   :min-lein-version "2.0.0"
-  :plugins [[lein-cljsbuild "0.1.0"]]
+  :plugins [[lein-cljsbuild "0.1.2"]]
   :description "FIXME: write description")
