@@ -7,7 +7,7 @@
 
 (defn ^:private make-line-span [n]
   (dom/element :span {:id (str "L" n)
-                      :rel (str "#L" n)} (str n)))
+                      :rel (str "#L" n)} (str (inc n))))
 
 (defn ^:private append-newline [parent elem]
   (dom/append parent elem "\n"))
@@ -21,7 +21,7 @@
   (let [old-n (count (garray/toArray (gdom/getChildren parent)))]
     (cond
       (< old-n n) (doseq [i (range old-n n)]
-                    (append-newline parent (make-line-span (inc i))))
+                    (append-newline parent (make-line-span i)))
       (> old-n n) (doseq [i (range n old-n)]
                     (remove-element-and-newline (dom/get-element (str "L" i)))))))
 
@@ -36,9 +36,8 @@
                         (remove-element-and-newline (get els i))))
 
     (let [new-childs (garray/toArray (gdom/getChildren parent))]
-      (doseq [n (range 0 new-n),
+      (doseq [n (range new-n),
               :let [el (get new-childs n),
                     text (get lines n)]]
         (when (not= (dom/get-value el) text)
-          (scroll-to-line n)
           (dom/set-text el text))))))
