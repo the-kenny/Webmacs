@@ -2,9 +2,12 @@
   - [ ] Simpler way to send key-value data (for buffer-data: major-mode)
   - [ ] Nicer mode-line (size, major-mode, percentage)
   - [ ] Scroll to current cursor position
+  - [X] Line Numbers
+  - [ ] command line arguments for ports
 
 * Later
   - [ ] Narrowing (needs hacks on Emacs-side, no hooks :( )
+    - [ ] Narrowing for org-mode (`org-cycle-hook')
   - [ ] Watch multiple buffers in splitscreen
   - [ ] List of published buffers
   - [ ] Authentication

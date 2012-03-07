@@ -19,7 +19,7 @@
   (let [old-n (count (garray/toArray (gdom/getChildren parent)))]
     (cond
       (< old-n n) (doseq [i (range old-n n)]
-                    (append-newline parent (make-line-span i)))
+                    (append-newline parent (make-line-span (inc i))))
       (> old-n n) (doseq [i (range n old-n)]
                     (remove-element-and-newline (dom/get-element (str "L" i)))))))
 
