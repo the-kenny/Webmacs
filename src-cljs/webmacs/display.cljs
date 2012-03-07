@@ -2,18 +2,20 @@
   (:require [webmacs.buffer :as buffer]
             [clojure.browser.dom :as dom]
             [goog.dom :as gdom]
-            [goog.array :as garray]))
+            [goog.array :as garray]
+            [goog.style :as gstyle]))
 
 (defn ^:private make-line-span [n]
-  (dom/element :span {:id (str "L" n)} (str n)))
+  (dom/element :span {:id (str "L" n)
+                      :rel (str "#L" n)} (str n)))
 
 (defn ^:private append-newline [parent elem]
   (dom/append parent elem "\n"))
 
 (defn ^:private remove-element-and-newline [elem]
   (let [sibling (.-nextSibling elem)]
-   (gdom/removeNode elem)
-   (gdom/removeNode sibling)))
+    (gdom/removeNode elem)
+    (gdom/removeNode sibling)))
 
 (defn update-line-count [parent n]
   (let [old-n (count (garray/toArray (gdom/getChildren parent)))]
@@ -34,8 +36,9 @@
                         (remove-element-and-newline (get els i))))
 
     (let [new-childs (garray/toArray (gdom/getChildren parent))]
-     (doseq [n (range 0 new-n),
-             :let [el (get new-childs n),
-                   text (get lines n)]]
-       (when (not= (dom/get-value el) text)
-         (dom/set-text el text))))))
+      (doseq [n (range 0 new-n),
+              :let [el (get new-childs n),
+                    text (get lines n)]]
+        (when (not= (dom/get-value el) text)
+          (scroll-to-line n)
+          (dom/set-text el text))))))

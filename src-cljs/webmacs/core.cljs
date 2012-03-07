@@ -22,9 +22,7 @@
     (dom/set-text (dom/get-element :mode-line) (str "Buffer: " (:name *buffer*)))
 
     (display/update-line-count (dom/get-element :line-numbers) (count *buffer-content-lines*))
-    (display/update-buffer-contents (dom/get-element :buffer-contents) *buffer-content-lines*)
-    ;; (dom/replace-node (dom/get-element :buffer-contents) (display/make-buffer-contents *buffer-content-lines*))
-    ))
+    (display/update-buffer-contents (dom/get-element :buffer-contents) *buffer-content-lines*)))
 
 (defn handle-close [])
 (defn handle-open [])
