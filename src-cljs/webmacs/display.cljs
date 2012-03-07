@@ -15,12 +15,6 @@
    (gdom/removeNode elem)
    (gdom/removeNode sibling)))
 
-(defn make-line-count [n]
-  (let [pre (dom/element :pre {:id "line-numbers"})]
-    (doseq [n (range 1 (inc n))]
-      (append-newline pre (make-line-span n)))
-    pre))
-
 (defn update-line-count [parent n]
   (let [old-n (count (garray/toArray (gdom/getChildren parent)))]
     (cond
@@ -28,12 +22,6 @@
                     (append-newline parent (make-line-span i)))
       (> old-n n) (doseq [i (range n old-n)]
                     (remove-element-and-newline (dom/get-element (str "L" i)))))))
-
-(defn make-buffer-contents [lines]
-  (let [pre (dom/element :pre {:id "buffer-contents"})]
-    (doseq [line lines]
-      (append-newline pre (dom/element :span line)))
-    pre))
 
 (defn update-buffer-contents [parent lines]
   (let [new-n (count lines)
