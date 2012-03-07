@@ -9,6 +9,12 @@
     margin-top: 0;
 }
 
+#line-numbers {
+    text-align: right;
+    padding-right: 5px;
+    border-right: 1px solid black;
+}
+
 #buffer-contents {
     word-wrap: break-word;
 }
