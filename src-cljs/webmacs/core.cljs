@@ -21,7 +21,7 @@
 
     (dom/set-text (dom/get-element :mode-line) (str "Buffer: " (:name *buffer*)))
 
-    (dom/replace-node (dom/get-element :line-numbers) (display/make-line-count (count *buffer-content-lines*)))
+    (display/update-line-count (dom/get-element :line-numbers) (count *buffer-content-lines*))
     (dom/replace-node (dom/get-element :buffer-contents) (display/make-buffer-contents *buffer-content-lines*))))
 
 (defn handle-close [])
