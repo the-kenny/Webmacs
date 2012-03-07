@@ -6,4 +6,4 @@
 
 (defn -main [& args]
   (apply web/start-server args)
-  (publishers/listen 9881))
+  (publishers/listen (Integer. (get (System/getenv) "EMACS_PORT" "9881"))))

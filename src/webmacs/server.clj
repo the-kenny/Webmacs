@@ -44,7 +44,7 @@
 ;;; TODO: Move the & m args
 (defn start-server [& m]
   (let [mode (keyword (or (first m) :dev))
-        port (Integer. (get (System/getenv) "PORT" "3000"))
+        port (Integer. (get (System/getenv) "WEB_PORT" "3000"))
         noir-handler (server/gen-handler {:mode mode})]
     (reset! server (start-http-server
                     (wrap-ring-handler noir-handler)

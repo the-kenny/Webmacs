@@ -3,7 +3,7 @@
   - [ ] Nicer mode-line (size, major-mode, percentage)
   - [ ] Scroll to current cursor position
   - [X] Line Numbers
-  - [ ] command line arguments for ports
+  - [X] command line arguments for ports
 
 * Later
   - [ ] Narrowing (needs hacks on Emacs-side, no hooks :( )
