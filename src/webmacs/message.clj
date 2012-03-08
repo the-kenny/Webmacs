@@ -14,10 +14,10 @@
 (defmethod parse 'delete [[_ buffer start end]]
   [:delete buffer (dec start) (dec end)])
 
-(defmethod parse 'buffer-data [[_ buffer length data]]
+(defmethod parse 'buffer-data [[_ buffer mode length data]]
   (let [decoded (String. (Base64/decodeBase64 ^String data) "utf-8")]
     (assert (= (count decoded) length)) ;TODO: Better error checking
-    [:buffer-data buffer length decoded]))
+    [:buffer-data buffer mode length decoded]))
 
 (defmethod parse :default [[op buffer & rest]]
   (concat [(keyword op) buffer] rest))

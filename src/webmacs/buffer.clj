@@ -25,9 +25,10 @@
 (defmulti ^:private modification-dispatch #(first %2) :default :default)
 
 (defmethod modification-dispatch :buffer-data [buffer [op name & req-rest]]
-  (let [[length data] req-rest]
+  (let [[mode length data] req-rest]
                      (assoc buffer
                        :name name
+                       :mode mode
                        :contents data)))
 
 (defmethod modification-dispatch :insert [buffer [op name & req-rest]]
