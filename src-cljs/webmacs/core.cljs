@@ -30,9 +30,8 @@
 (defn handle-close [])
 (defn handle-open [])
 
-
 (defn ^:export open-socket [uri]
-  (let [ws (js/WebSocket. uri)]
+  (let [ws (if (.-MozWebSocket js/window) (js/MozWebSocket. uri) (js/WebSocket. uri))]
     (set! (.-onopen ws) (fn [_] (handle-open)))
     (set! (.-onclose ws) (fn [] (handle-close)))
     (set! (.-onmessage ws) #(handle-socket-message %))
