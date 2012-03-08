@@ -1,6 +1,9 @@
 * First Release
   - [ ] Simpler way to send key-value data (for buffer-data: major-mode)
-  - [ ] Nicer mode-line (size, major-mode, percentage)
+  - [-] Nicer mode-line
+    - [ ] Buffer size
+    - [X] Major/Minor Modes
+    - [ ] Scrolling percentage
   - [ ] Scroll to current cursor position
   - [X] Line Numbers
   - [X] command line arguments for ports
