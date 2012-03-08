@@ -31,7 +31,7 @@
         buf (get-buffer buffer-name)]
     ;; First, send whole buffer
     ;; TODO: The message should be created in webmacs.message
-    (enqueue client-channel [:buffer-data buffer-name (count (:contents buf)) (:contents buf)])
+    (enqueue client-channel [:buffer-data buffer-name (:mode buf) (count (:contents buf)) (:contents buf)])
     ;; Then start piping everything from `change-channel'
     (siphon chan client-channel)))
 
