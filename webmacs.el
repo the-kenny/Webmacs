@@ -5,11 +5,15 @@
 
 ;;; Code:
 
+(require 'ls-lisp)                      ;For ls-lisp-format-file-size
+
 (defvar webmacs-buffer-name "*webmacs*")
 (defvar webmacs-process-name "webmacs connection")
 
 (defvar webmacs-host "localhost")
 (defvar webmacs-port 9881)
+
+(defvar webmacs-warning-threshold 10000)
 
 (defun webmacs-process-sentinel (process event)
   (when (equal (process-status process) 'closed)
@@ -84,13 +88,15 @@ command `webmacs-open-connection'."
   :group 'webmacs
 
   (if webmacs-mode
-    (progn
+    (if (or (< (buffer-size) webmacs-warning-threshold)
+              (yes-or-no-p (format "Buffer %s is large (%s). Continue? " (buffer-name) (ls-lisp-format-file-size (buffer-size) t))))
       (if (not (get-buffer-process webmacs-buffer-name))
         (message "No webmacs connection. Please open one using `webmacs-open-connection'")
         ;; (if (yes-or-no-p "No webmacs connection. Open one? ")
         ;;     (call-interactively #'webmacs-open-connection))
         (add-hook 'after-change-functions #'webmacs-after-change nil 'local)
-        (webmacs-publish-buffer (buffer-name))))
+        (webmacs-publish-buffer (buffer-name)))
+      (webmacs-mode 0))
     (remove-hook 'after-change-functions #'webmacs-after-change 'local)))
 
 (provide 'webmacs)

@@ -7,7 +7,7 @@
   - [ ] Scroll to current cursor position
   - [X] Line Numbers
   - [X] command line arguments for ports
-  - [ ] Add a warning for too big buffers
+  - [X] Add a warning for too big buffers
   - [X] auto-send buffer contents to server when the user opens a new connection
 
 * Later
