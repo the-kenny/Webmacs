@@ -31,11 +31,14 @@ Argument PORT The listen port of the webmacs server."
                                 :buffer webmacs-buffer-name
                                 :host host
                                 :service port)))
-    (set-process-sentinel process #'webmacs-process-sentinel)))
+    (set-process-sentinel process #'webmacs-process-sentinel))
 
-(defun webmacs-publish-buffer (buffer-name)
-  (let ((buffer (get-buffer buffer-name)))
-    ;; (add-to-list 'after-change-functions #'webmacs-after-change)
+  (dolist (buffer (buffer-list))
+    (when (buffer-local-value webmacs-mode buffer)
+      (webmacs-publish-buffer buffer))))
+
+(defun webmacs-publish-buffer (buffer-or-name)
+  (let ((buffer (get-buffer buffer-or-name)))
     (process-send-string webmacs-buffer-name (format "%S" (webmacs-generate-buffer-data buffer)))))
 
 (defun webmacs-encode-string (string)
