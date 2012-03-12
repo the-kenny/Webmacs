@@ -1,4 +1,5 @@
 (defproject webmacs "0.0.1-SNAPSHOT"
+  :description "View your Emacs buffers in a browser. Live."
   :dependencies [[org.clojure/clojure "1.3.0"]
                  [server-socket "1.0.0"]
                  [commons-codec "1.5"]
@@ -12,5 +13,4 @@
   :profiles {:dev {:dependencies [[midje "1.3.1"]]}}
   :main webmacs.core
   :min-lein-version "2.0.0"
-  :plugins [[lein-cljsbuild "0.1.2"]]
-  :description "FIXME: write description")
+  :plugins [[lein-cljsbuild "0.1.2"]])
