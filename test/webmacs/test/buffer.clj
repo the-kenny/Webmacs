@@ -9,4 +9,8 @@
 
 (fact (replace-region (make-buffer ...any... "dafbbbccc") 0 3 "aaa") => (EmacsBuffer. ...any... "aaabbbccc"))
 
+(future-facts "narrow")
+
+(future-facts "widen")
+
 (future-facts "apply-modification")
