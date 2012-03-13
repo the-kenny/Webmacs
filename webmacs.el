@@ -41,9 +41,13 @@ Argument PORT The listen port of the webmacs server."
     (when (buffer-local-value webmacs-mode buffer)
       (webmacs-publish-buffer buffer))))
 
+;;; TODO: Error checking
+(defun webmacs-send-data (data)
+  (process-send-string webmacs-buffer-name (format "%S" data)))
+
 (defun webmacs-publish-buffer (buffer-or-name)
   (let ((buffer (get-buffer buffer-or-name)))
-    (process-send-string webmacs-buffer-name (format "%S" (webmacs-generate-buffer-data buffer)))))
+    (webmacs-send-data (webmacs-generate-buffer-data buffer))))
 
 (defun webmacs-encode-string (string)
   (base64-encode-string (encode-coding-string string 'utf-8) 'no-newline))
@@ -69,17 +73,19 @@ Argument PORT The listen port of the webmacs server."
 
 (defun webmacs-after-change (start end length)
   (if (processp (get-buffer-process webmacs-buffer-name))
-    (process-send-string webmacs-buffer-name (format "%S" (webmacs-generate-change-query start end length)))
+      (webmacs-send-data (webmacs-generate-change-query start end length))
     (message "No webmacs connection. Please open it using `webmacs-open-connection'")))
 
 ;;; Narrowing function
 
 ;;; TODO: Enable only in buffers with webmacs-mode enabled
 (defadvice narrow-to-region (after webmacs-narrow-to-region)
-  (message "webmacs-narrow-to-region"))
+  (when webmacs-mode
+   (message "webmacs-narrow-to-region")))
 
 (defadvice widen (after webmacs-widen)
-  (message "webmacs-widen"))
+  (when webmacs-mode
+    (message "webmacs-widen")))
 
 (ad-activate 'narrow-to-region)
 (ad-activate 'widen)
