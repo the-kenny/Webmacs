@@ -7,20 +7,30 @@
   ([name] (make-buffer name nil))
   ([name contents] (EmacsBuffer. name contents)))
 
+(defn ^:private update-narrow [narrow delta]
+  (when-let [[beg end] narrow]
+    [beg (+ end delta)]))
+
 (defn delete-region [buffer from to]
   (let [before (subs (:contents buffer) 0 from)
         after (subs (:contents buffer) to)]
-    (assoc buffer :contents (.concat before after))))
+    (assoc buffer
+      :contents (.concat before after)
+      :narrow (update-narrow (:narrow buffer) (- from to)))))
 
 (defn insert-data [buffer at data]
   (let [before (subs (:contents buffer) 0 at)
         after (subs (:contents buffer) at)]
-    (assoc buffer :contents (str before data after))))
+    (assoc buffer
+      :contents (str before data after)
+      :narrow (update-narrow (:narrow buffer) (count data)))))
 
 (defn replace-region [buffer from to data]
   (let [before (subs (:contents buffer) 0 from)
         after (subs (:contents buffer) to)]
-    (assoc buffer :contents (str before data after))))
+    (assoc buffer
+      :contents (str before data after)
+      :narrow (update-narrow (:narrow buffer) (+ (- to from) (count data))))))
 
 (defmulti ^:private modification-dispatch #(first %2) :default :default)
 
