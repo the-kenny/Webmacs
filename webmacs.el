@@ -38,8 +38,9 @@ Argument PORT The listen port of the webmacs server."
     (set-process-sentinel process #'webmacs-process-sentinel))
 
   (dolist (buffer (buffer-list))
-    (when (buffer-local-value webmacs-mode buffer)
-      (webmacs-publish-buffer buffer))))
+    (with-current-buffer buffer
+     (when webmacs-mode
+       (webmacs-publish-buffer (current-buffer))))))
 
 ;;; TODO: Error checking
 (defun webmacs-send-data (data)
