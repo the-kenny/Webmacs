@@ -72,6 +72,18 @@ Argument PORT The listen port of the webmacs server."
     (process-send-string webmacs-buffer-name (format "%S" (webmacs-generate-change-query start end length)))
     (message "No webmacs connection. Please open it using `webmacs-open-connection'")))
 
+;;; Narrowing function
+
+;;; TODO: Enable only in buffers with webmacs-mode enabled
+(defadvice narrow-to-region (after webmacs-narrow-to-region)
+  (message "webmacs-narrow-to-region"))
+
+(defadvice widen (after webmacs-widen)
+  (message "webmacs-widen"))
+
+(ad-activate 'narrow-to-region)
+(ad-activate 'widen)
+
 (define-minor-mode webmacs-mode
   "Toggle webmacs publishing.
 With no argument, this command toggles the mode.
