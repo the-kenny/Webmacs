@@ -19,5 +19,11 @@
     (assert (= (count decoded) length)) ;TODO: Better error checking
     [:buffer-data buffer mode length decoded]))
 
+(defmethod parse 'narrow [[_ buffer point-min point-max]]
+  [:narrow buffer point-min point-max])
+
+(defmethod parse 'widen [[_ buffer point-min point-max]]
+  [:widen buffer point-min point-max])
+
 (defmethod parse :default [[op buffer & rest]]
-  (concat [(keyword op) buffer] rest))
+  (vec (concat [(keyword op) buffer] rest)))

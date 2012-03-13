@@ -40,6 +40,13 @@
 (defmethod modification-dispatch :delete [buffer [op name & req-rest]]
   (let [[start end] req-rest] (delete-region buffer start end)))
 
+(defmethod modification-dispatch :narrow [buffer [op name point-min point-max]]
+  (assoc buffer :narrow [point-min point-max]))
+
+(defmethod modification-dispatch :widen [buffer [op name _ _]]
+  (dissoc buffer :narrow))
+
+;;; TODO: Fix println in clojurescript
 (defmethod modification-dispatch :default [buffer request]
   (println "Unknown request: " request))
 

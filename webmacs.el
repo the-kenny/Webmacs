@@ -87,7 +87,7 @@ Argument PORT The listen port of the webmacs server."
 (defadvice widen (after webmacs-widen)
   (when webmacs-mode
     (message "webmacs-widen")
-    (webmacs-send-data (list 'widen (buffer-name) (point-min) (point-max))))
+    (webmacs-send-data (list 'widen (buffer-name) (point-min) (point-max)))))
 
 (ad-activate 'narrow-to-region)
 (ad-activate 'widen)
