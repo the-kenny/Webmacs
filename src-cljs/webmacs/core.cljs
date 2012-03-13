@@ -35,8 +35,18 @@
                   true "Top")]
     (str "Buffer: " name "\t" pos-str " of " size-str "\t(" mode ")")))
 
+(defn apply-narrow [buffer]
+  (if-let [[beg end] (:narrow buffer)]
+    (update-in buffer [:contents] subs beg end)
+    buffer))
 (defn update-modeline [parent buffer]
   (dom/set-text parent (make-modeline buffer)))
+
+(defn display-buffer [buffer]
+  (let [lines (string/split-lines (:contents buffer))]
+   (display/update-line-count (dom/get-element :line-numbers) (count lines))
+   (display/update-buffer-contents (dom/get-element :buffer-contents) lines)
+   (update-modeline (dom/get-element :mode-line) buffer)))
 
 ;;; NOTE: Why does't event/listen work?
 (gevents/listen (gdom/getWindow)
@@ -47,12 +57,11 @@
 (defn handle-socket-message [socket-event]
   (let [obj (reader/read-string (.-data socket-event))]
     (set! *buffer* (buffer/apply-modification *buffer* obj))
-    (set! *buffer-content-lines* (string/split-lines (:contents *buffer*)))
+    ;; (set! *buffer-content-lines* (string/split-lines (:contents *buffer*)))
 
-    (update-modeline (dom/get-element :mode-line) *buffer*)
-
-    (display/update-line-count (dom/get-element :line-numbers) (count *buffer-content-lines*))
-    (display/update-buffer-contents (dom/get-element :buffer-contents) *buffer-content-lines*)))
+    (->> *buffer*
+         (apply-narrow)
+         (display-buffer))))
 
 (defn handle-close [])
 (defn handle-open [])
