@@ -8,14 +8,6 @@
             [goog.dom :as gdom]
             [goog.events :as gevents]))
 
-(def *socket* nil)
-(def *buffer* nil)
-(def *buffer-content-lines* nil)
-
-(defn send-data [data]
-  (binding [*print-meta* true]
-    (.send *socket* (pr-str data))))
-
 (def ^:private +conversion+ 1024)
 
 (defn make-modeline [buffer]
@@ -39,6 +31,7 @@
   (if-let [[beg end] (:narrow buffer)]
     (update-in buffer [:contents] subs beg end)
     buffer))
+
 (defn update-modeline [parent buffer]
   (dom/set-text parent (make-modeline buffer)))
 
@@ -48,10 +41,7 @@
    (display/update-buffer-contents (dom/get-element :buffer-contents) lines)
    (update-modeline (dom/get-element :mode-line) buffer)))
 
-;;; NOTE: Why does't event/listen work?
-(gevents/listen (gdom/getWindow)
-                gevents/EventType.SCROLL
-                #(update-modeline (dom/get-element :mode-line) *buffer*))
+(def *buffer* nil)
 
 ;;; Connnection Stuff
 (defn handle-socket-message [socket-event]
@@ -62,6 +52,19 @@
     (->> *buffer*
          (apply-narrow)
          (display-buffer))))
+
+;;; NOTE: Why does't event/listen work?
+(gevents/listen (gdom/getWindow)
+                gevents/EventType.SCROLL
+                #(update-modeline (dom/get-element :mode-line) *buffer*))
+
+;;;; Socket Stuff
+
+(def *socket* nil)
+
+(defn send-data [data]
+  (binding [*print-meta* true]
+    (.send *socket* (pr-str data))))
 
 (defn handle-close [])
 (defn handle-open [])
