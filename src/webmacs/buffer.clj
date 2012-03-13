@@ -30,7 +30,7 @@
         after (subs (:contents buffer) to)]
     (assoc buffer
       :contents (str before data after)
-      :narrow (update-narrow (:narrow buffer) (+ (- to from) (count data))))))
+      :narrow (update-narrow (:narrow buffer) (- (count data) (- to from))))))
 
 (defmulti ^:private modification-dispatch #(first %2) :default :default)
 
