@@ -18,4 +18,5 @@
   - [ ] Watch multiple buffers in splitscreen
   - [ ] List of published buffers
   - [ ] Authentication
+  - [ ] Publish region (useful for presentations)
   - [ ] font-lock
