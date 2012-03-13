@@ -81,11 +81,13 @@ Argument PORT The listen port of the webmacs server."
 ;;; TODO: Enable only in buffers with webmacs-mode enabled
 (defadvice narrow-to-region (after webmacs-narrow-to-region)
   (when webmacs-mode
-   (message "webmacs-narrow-to-region")))
+    (message "webmacs-narrow-to-region")
+    (webmacs-send-data (list 'narrow (buffer-name) (point-min) (point-max)))))
 
 (defadvice widen (after webmacs-widen)
   (when webmacs-mode
-    (message "webmacs-widen")))
+    (message "webmacs-widen")
+    (webmacs-send-data (list 'widen (buffer-name) (point-min) (point-max))))
 
 (ad-activate 'narrow-to-region)
 (ad-activate 'widen)
