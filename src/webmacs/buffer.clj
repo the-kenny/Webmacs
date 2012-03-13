@@ -36,10 +36,12 @@
 
 (defmethod modification-dispatch :buffer-data [buffer [op name & req-rest]]
   (let [[mode length data] req-rest]
-                     (assoc buffer
-                       :name name
-                       :mode mode
-                       :contents data)))
+    (-> buffer
+        (assoc
+            :name name
+            :mode mode
+            :contents data)
+        (dissoc :narrow))))
 
 (defmethod modification-dispatch :insert [buffer [op name & req-rest]]
   (let [[at data] req-rest] (insert-data buffer at data)))
