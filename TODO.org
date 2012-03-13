@@ -1,3 +1,6 @@
+* High Priority
+  - [ ] Somehow all buffers end up on the server. bad.
+
 * First Release
   - [ ] Simpler way to send key-value data (for buffer-data: major-mode)
   - [X] Nicer mode-line
