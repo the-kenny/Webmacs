@@ -1,61 +1,63 @@
+#+STARTUP: indent
+
 #+TITLE: Webmacs
 
 * Description
 
-  Webmacs is a package which lets other people watch you editing stuff in Emacs on every modern web browser.
+Webmacs is a package which lets other people watch you editing stuff in Emacs on every modern web browser.
 
 * Usage
 ** Server Side
 
-   The server is written in Clojure. Currently no pre-built jar is available, so you need [[http://leiningen.org][leiningen]].
+The server is written in Clojure. Currently no pre-built jar is available, so you need [[http://leiningen.org][leiningen]].
 
-   #+begin_src sh
-     $ git clone https://github.com/the-kenny/webmacs.git
-     $ cd webmacs
-     $ lein run
-   #+end_src
+#+begin_src sh
+$ git clone https://github.com/the-kenny/webmacs.git
+$ cd webmacs
+$ lein run
+#+end_src
 
-   This will run a local webserver on port 3000. The entry point for Emacs is port 9881.
+This will run a local webserver on port 3000. The entry point for Emacs is port 9881.
 
-   You can change these defaults via environment variables ~EMACS_PORT~ and ~WEB_PORT~.
+You can change these defaults via environment variables ~EMACS_PORT~ and ~WEB_PORT~.
 
 ** Emacs Side
 
 1) Put webmacs.el somewhere in your load path
 2) Load webmacs.el
 
-   #+begin_src lisp
-     (require 'webmacs)
-   #+end_src
+#+begin_src lisp
+(require 'webmacs)
+#+end_src
 
 3) Connect to Server
 
-   #+begin_src lisp
-     M-x webmacs-open-connection RET RET RET
-   #+end_src
+#+begin_src lisp
+M-x webmacs-open-connection RET RET RET
+#+end_src
 
 4) Enable ~webmacs-mode~ in every buffer which you want to publish
 
-   #+begin_src lisp
-     M-x webmacs-mode
-   #+end_src
+#+begin_src lisp
+M-x webmacs-mode
+#+end_src
 
 ** Browser
 
-   Published buffers are referenced via their name:
+Published buffers are referenced via their name:
 
-   #+begin_example
-   http://localhost:3000/emacs/<buffer-name>
-   #+end_example
+#+begin_example
+http://localhost:3000/emacs/<buffer-name>
+#+end_example
 
 * Future Goals
 
-  Webmacs is in pretty rough shape. A major feature missing is font-lock (syntax highlighting), and many other convenient things like listing available buffers isn't implemented yet.
+Webmacs is in pretty rough shape. A major feature missing is font-lock (syntax highlighting), and many other convenient things like listing available buffers isn't implemented yet.
 
-  See TODO.org for things that needs to be done.
+See TODO.org for things that needs to be done.
 
 * License
 
-  Copyright © 2012 Moritz Ulrich
+Copyright © 2012 Moritz Ulrich
 
-  Distributed under the Eclipse Public License, the same as Clojure.
+Distributed under the Eclipse Public License, the same as Clojure.
