@@ -11,11 +11,11 @@ Webmacs is a package which lets other people watch you editing stuff in Emacs on
 
 The server is written in Clojure. Currently no pre-built jar is available, so you need [[http://leiningen.org][leiningen]].
 
-#+begin_src sh
+#+BEGIN_SRC sh
 $ git clone https://github.com/the-kenny/webmacs.git
 $ cd webmacs
 $ lein run
-#+end_src
+#+END_SRC
 
 This will run a local webserver on port 3000. The entry point for Emacs is port 9881.
 
@@ -26,29 +26,29 @@ You can change these defaults via environment variables ~EMACS_PORT~ and ~WEB_PO
 1) Put webmacs.el somewhere in your load path
 2) Load webmacs.el
 
-#+begin_src lisp
+#+BEGIN_SRC lisp
 (require 'webmacs)
-#+end_src
+#+END_SRC
 
 3) Connect to Server
 
-#+begin_src lisp
+#+BEGIN_SRC lisp
 M-x webmacs-open-connection RET RET RET
-#+end_src
+#+END_SRC
 
 4) Enable ~webmacs-mode~ in every buffer which you want to publish
 
-#+begin_src lisp
+#+BEGIN_SRC lisp
 M-x webmacs-mode
-#+end_src
+#+END_SRC
 
 ** Browser
 
 Published buffers are referenced via their name:
 
-#+begin_example
+#+BEGIN_EXAMPLE
 http://localhost:3000/emacs/<buffer-name>
-#+end_example
+#+END_EXAMPLE
 
 * Future Goals
 
