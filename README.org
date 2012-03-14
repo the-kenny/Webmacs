@@ -36,6 +36,8 @@ You can change these defaults via environment variables ~EMACS_PORT~ and ~WEB_PO
 M-x webmacs-open-connection RET RET RET
 #+END_SRC
 
+(Optional: Specify other values for host and port)
+
 4) Enable ~webmacs-mode~ in every buffer which you want to publish
 
 #+BEGIN_SRC lisp
