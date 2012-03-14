@@ -79,8 +79,10 @@ Argument PORT The listen port of the webmacs server."
   (with-current-buffer (or buffer (current-b))
     (save-restriction
       (ad-disable-advice 'widen 'after 'webmacs-widen)
+      (ad-activate 'widen)
       (widen)
       (ad-enable-advice 'widen 'after 'webmacs-widen)
+      (ad-activate 'widen)
       (list 'buffer-data (buffer-name buffer) mode-name (buffer-size) (webmacs-encode-string (buffer-string))))))
 
 (defun webmacs-after-change (start end length)
