@@ -69,8 +69,12 @@ Argument PORT The listen port of the webmacs server."
             (webmacs-encode-string (buffer-substring change-start change-end))))))
 
 (defun webmacs-generate-buffer-data (&optional buffer)
-  (with-current-buffer (or buffer (current-buffer))
-    (list 'buffer-data (buffer-name buffer) mode-name (buffer-size) (webmacs-encode-string (buffer-string)))))
+  (with-current-buffer (or buffer (current-b))
+    (save-restriction
+      (ad-disable-advice 'widen 'after 'webmacs-widen)
+      (widen)
+      (ad-enable-advice 'widen 'after 'webmacs-widen)
+      (list 'buffer-data (buffer-name buffer) mode-name (buffer-size) (webmacs-encode-string (buffer-string))))))
 
 (defun webmacs-after-change (start end length)
   (if (processp (get-buffer-process webmacs-buffer-name))
