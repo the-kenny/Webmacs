@@ -15,7 +15,7 @@
   (let [before (subs (:contents buffer) 0 from)
         after (subs (:contents buffer) to)]
     (merge buffer
-           {:contents (.concat before after)}
+           {:contents (str before after)}
            (when-let [nn (update-narrow (:narrow buffer) (- from to))] {:narrow nn}))))
 
 (defn insert-data [buffer at data]
