@@ -12,8 +12,8 @@
 
 * Later
   - [ ] `webmacs-global-mode': Show the whole screen, including split-windows, minibuffer, etc. (Thanks, Aristid)
-  - [ ] Narrowing (needs hacks on Emacs-side, no hooks :( )
-    - [ ] Narrowing for org-mode (`org-cycle-hook')
+  - [X] Narrowing (needs hacks on Emacs-side, no hooks :( )
+  - [ ] Narrowing for org-mode (`org-cycle-hook')
   - [ ] Fix `lein midje'
   - [ ] Watch multiple buffers in splitscreen
   - [ ] List of published buffers
