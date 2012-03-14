@@ -14,23 +14,23 @@
 (defn delete-region [buffer from to]
   (let [before (subs (:contents buffer) 0 from)
         after (subs (:contents buffer) to)]
-    (assoc buffer
-      :contents (.concat before after)
-      :narrow (update-narrow (:narrow buffer) (- from to)))))
+    (merge buffer
+           {:contents (.concat before after)}
+           (when-let [nn (update-narrow (:narrow buffer) (- from to))] {:narrow nn}))))
 
 (defn insert-data [buffer at data]
   (let [before (subs (:contents buffer) 0 at)
         after (subs (:contents buffer) at)]
-    (assoc buffer
-      :contents (str before data after)
-      :narrow (update-narrow (:narrow buffer) (count data)))))
+    (merge buffer
+           {:contents (str before data after)}
+           (when-let [nn (update-narrow (:narrow buffer) (count data))] {:narrow nn}))))
 
 (defn replace-region [buffer from to data]
   (let [before (subs (:contents buffer) 0 from)
         after (subs (:contents buffer) to)]
-    (assoc buffer
-      :contents (str before data after)
-      :narrow (update-narrow (:narrow buffer) (- (count data) (- to from))))))
+    (merge buffer
+           {:contents (str before data after)}
+           (when-let [nn (update-narrow (:narrow buffer) (- (count data) (- to from)))] {:narrow nn}))))
 
 (defmulti ^:private modification-dispatch #(first %2) :default :default)
 
