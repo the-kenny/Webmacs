@@ -92,15 +92,27 @@ Argument PORT The listen port of the webmacs server."
 
 ;;; Narrowing function
 
-;;; TODO: Enable only in buffers with webmacs-mode enabled
-(defadvice narrow-to-region (after webmacs-narrow-to-region activate)
-  (when webmacs-mode
-    (message "webmacs-narrow-to-region")
-    (webmacs-send-data (list 'narrow (buffer-name) (point-min) (point-max)))))
+;;; TODO: Store all adviced fns in a field
+;;; TODO: Add `webmacs-without-narrow'
+(defmacro webmacs-advice-narrow (f)
+  `(defadvice ,f (after ,(intern (format "webmacs-%S" f)) activate)
+     (when webmacs-mode
+       ;; (message (format "webmacs-%S" (quote ,f)))
+       (webmacs-send-data (list 'narrow (buffer-name) (point-min) (point-max))))))
+
+(webmacs-advice-narrow narrow-to-region)
+(webmacs-advice-narrow narrow-to-page)
+(webmacs-advice-narrow narrow-to-defun)
+
+(eval-after-load 'org
+  (progn
+   (webmacs-advice-narrow org-narrow-to-subtree)
+   (webmacs-advice-narrow org-narrow-to-block)
+   t))
 
 (defadvice widen (after webmacs-widen activate)
   (when webmacs-mode
-    (message "webmacs-widen")
+    ;; (message "webmacs-widen")
     (webmacs-send-data (list 'widen (buffer-name) (point-min) (point-max)))))
 
 (define-minor-mode webmacs-mode
