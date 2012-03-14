@@ -46,9 +46,16 @@ Argument PORT The listen port of the webmacs server."
 (defun webmacs-send-data (data)
   (process-send-string webmacs-buffer-name (format "%S" data)))
 
+(defun webmacs-narrow-p (buffer-or-name)
+  (with-current-buffer (get-buffer buffer-or-name)
+    (or (not (equal 1 (point-min))) (not (equal (- (point-max) (point-min)) (buffer-size))))))
+
 (defun webmacs-publish-buffer (buffer-or-name)
   (let ((buffer (get-buffer buffer-or-name)))
-    (webmacs-send-data (webmacs-generate-buffer-data buffer))))
+    (with-current-buffer buffer
+      (webmacs-send-data (webmacs-generate-buffer-data buffer))
+      (when (webmacs-narrow-p buffer-or-name) ;Narrowing is active
+        (webmacs-send-data (list 'narrow (buffer-name) (point-min) (point-max)))))))
 
 (defun webmacs-encode-string (string)
   (base64-encode-string (encode-coding-string string 'utf-8) 'no-newline))
