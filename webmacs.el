@@ -91,18 +91,15 @@ Argument PORT The listen port of the webmacs server."
 ;;; Narrowing function
 
 ;;; TODO: Enable only in buffers with webmacs-mode enabled
-(defadvice narrow-to-region (after webmacs-narrow-to-region)
+(defadvice narrow-to-region (after webmacs-narrow-to-region activate)
   (when webmacs-mode
     (message "webmacs-narrow-to-region")
     (webmacs-send-data (list 'narrow (buffer-name) (point-min) (point-max)))))
 
-(defadvice widen (after webmacs-widen)
+(defadvice widen (after webmacs-widen activate)
   (when webmacs-mode
     (message "webmacs-widen")
     (webmacs-send-data (list 'widen (buffer-name) (point-min) (point-max)))))
-
-(ad-activate 'narrow-to-region)
-(ad-activate 'widen)
 
 (define-minor-mode webmacs-mode
   "Toggle webmacs publishing.
