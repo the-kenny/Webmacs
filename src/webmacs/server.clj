@@ -9,6 +9,16 @@
             [webmacs.publishers :as publishers]
             [webmacs.buffer :as buffer]))
 
+(defpage "/" []
+  (html5 [:head
+          [:title "Webmacs"]]
+         [:body
+          (if-let [buffers (seq (publishers/buffer-names))]
+           [:ul
+            (for [name buffers]
+              [:li [:a {:href (str "/emacs/" name)} name]])]
+           [:span "No Buffers :-( Use `M-x webmacs-mode' to publish buffers"])]))
+
 (defpage "/emacs/:name" {:keys [name]}
   (html5 [:head
           [:title "Emacs: " name]

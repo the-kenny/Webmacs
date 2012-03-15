@@ -4,13 +4,18 @@
         midje.sweet
         lamina.core))
 
-(def +name+ "foo.org")
+(def +name+ "webmacs.test.publishers.org")
 
-(against-background [(before :facts (reset-publishers!))]
+(against-background [(before :facts (reset-publishers!))
+                     (after :facts (reset-publishers!))]
+  (facts
+    (buffer-names) => nil)
+
   (facts
     (let [buf (make-buffer +name+ "text")]
       (get-buffer +name+)     => nil
       (store-buffer! buf)     => any
+      (buffer-names)          => sequential?
       (get-buffer +name+)     => buf
       (remove-buffer! +name+) => any
       (get-buffer +name+)     => nil))

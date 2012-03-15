@@ -9,6 +9,9 @@
 (def buffer-channels (atom {}))          ;maps buffer-names to lamina channels
 (def buffers (atom {}))
 
+(defn buffer-names []
+  (keys @buffers))
+
 (defn get-buffer [name]
   (get @buffers name))
 

@@ -1,14 +1,26 @@
 (ns webmacs.test.server
   (:use webmacs.server
         midje.sweet
-        [hiccup.core :only [html]]))
+        [hiccup.core :only [html]]
+        [webmacs.publishers :only [store-buffer! reset-publishers!]]
+        [webmacs.buffer :only [make-buffer]]))
 
-(background (before :facts (start-server))
-            (after :facts (stop-server)))
+(def +name+ "webmacs.test.server.org")
+(def +url+ "http://localhost:3000")
 
-(def +name+ "foo.org")
+(against-background [(before :contents (start-server))
+                     (after  :contents (stop-server))]
+  (fact "/ without buffers"
+    (slurp +url+) => (contains "No Buffers :-("))
 
-(fact "/emacs/<buffer-name>"
-  (slurp (str "http://localhost:3000/emacs/" +name+)) => (contains (html [:title (str "Emacs: " +name+)])))
+  (fact "/ with buffers"
+    (slurp +url+) => (contains +name+)
+    (against-background
+      (before :facts (store-buffer! (make-buffer +name+ ...any...)))
+      (after  :facts (reset-publishers!))))
 
-(future-fact "websocket on /sockets/<buffer-name>")
+  (fact "/emacs/<buffer-name>"
+    (slurp (str +url+ "/emacs/" +name+)) => (contains (html [:title (str "Emacs: "
+                                                                         +name+)])))
+
+  (future-fact "websocket on /sockets/<buffer-name>"))

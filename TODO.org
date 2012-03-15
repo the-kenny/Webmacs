@@ -16,7 +16,7 @@
   - [ ] Narrowing for org-mode (`org-cycle-hook')
   - [ ] Fix `lein midje'
   - [ ] Watch multiple buffers in splitscreen
-  - [ ] List of published buffers
+  - [X] List of published buffers
   - [ ] Authentication
   - [ ] Publish region (useful for presentations)
   - [ ] font-lock
