@@ -1,9 +1,16 @@
 (ns webmacs.core
-  (:use [webmacs.publishers :as publishers]
+  (:require [webmacs.publishers :as publishers]
         [webmacs.server :as web])
   (:gen-class))
 
+(defn bootstrap [web-port emacs-port]
+  (publishers/start-listening emacs-port)
+  (web/start-server web-port))
+
+(defn shutdown []
+  (publishers/stop-listening)
+  (web/stop-server))
 
 (defn -main [& args]
-  (apply web/start-server args)
-  (publishers/listen (Integer. (get (System/getenv) "EMACS_PORT" "9881"))))
+  (bootstrap (Integer. (get (System/getenv) "WEB_PORT"   "3000"))
+             (Integer. (get (System/getenv) "EMACS_PORT" "9881"))))

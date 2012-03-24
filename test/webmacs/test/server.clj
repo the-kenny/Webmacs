@@ -2,13 +2,14 @@
   (:use webmacs.server
         midje.sweet))
 
-(def +url+ "http://localhost:3000/")
+(def +port+ 3000)
+(def +url+ (str "http://localhost:" +port+))
 
 (facts "start-server"
   (slurp +url+)  => string?
-  (start-server) => (throws IllegalStateException)
+  (start-server +port+) => (throws IllegalStateException)
   (against-background
-    (before :contents (start-server))
+    (before :contents (start-server +port+))
     (after  :contents (stop-server))))
 
 (facts "stop-server"

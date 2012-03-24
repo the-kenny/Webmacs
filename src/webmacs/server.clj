@@ -7,12 +7,11 @@
 (def server (atom nil))
 
 ;;; TODO: Move the & m args
-(defn start-server [& m]
+(defn start-server [port & [mode]]
   (when @server
     (throw (IllegalStateException. "Webserver already running")))
 
-  (let [mode (keyword (or (first m) :dev))
-        port (Integer. (get (System/getenv) "WEB_PORT" "3000"))
+  (let [mode (keyword (or mode :dev))
         noir-handler (server/gen-handler {:mode mode})]
     (reset! server (start-http-server
                     (wrap-ring-handler noir-handler)
@@ -20,5 +19,5 @@
 
 (defn stop-server []
   (when-let [s @server]
-   (s))
-  (reset! server nil))
+    (s)
+    (reset! server nil)))

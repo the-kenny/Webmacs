@@ -69,12 +69,20 @@
     (buffer-changed! request)
     (recur input output)))
 
-(defn listen [port]
-  (ss/create-server port
-                    (fn [is os]
-                      (let [ird (java.io.PushbackReader. (io/reader is))
-                            owr (io/writer os)]
-                        (try
-                          (emacs-connection-loop ird owr)
-                          (catch java.net.SocketException e
-                            (println "Got SocketException:" (.getMessage e) "Exiting.")))))))
+(def listen-server (atom nil))
+
+(defn start-listening [port]
+  (reset! listen-server
+          (ss/create-server port
+                            (fn [is os]
+                              (let [ird (java.io.PushbackReader. (io/reader is))
+                                    owr (io/writer os)]
+                                (try
+                                  (emacs-connection-loop ird owr)
+                                  (catch java.net.SocketException e
+                                    (println "Got SocketException:" (.getMessage e) "Exiting."))))))))
+
+(defn stop-listening []
+  (when-let [s @listen-server]
+    (ss/close-server s)
+    (reset! listen-server nil)))
