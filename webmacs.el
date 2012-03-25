@@ -122,6 +122,9 @@ Argument PORT The listen port of the webmacs server."
   (with-current-buffer (or buffer (current-buffer))
     (remove-if (lambda (s) (not (buffer-local-value s (current-buffer)))) webmacs-problematic-minor-modes)))
 
+;;; TODO: Add `webmacs-mode-no-warn' to enable `webmacs-mode' programmatically
+;;; even when no connection is open
+
 (define-minor-mode webmacs-mode
   "Toggle webmacs publishing.
 With no argument, this command toggles the mode.
