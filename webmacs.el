@@ -21,7 +21,7 @@
 (defun webmacs-process-sentinel (process event)
   (when (equal (process-status process) 'closed)
     ;; TODO: Make this more visible
-    (message "Lost webmacs connection. Please reconnect using `webmacs-open-connection'")))
+    (error "Lost webmacs connection. Please reconnect using `webmacs-open-connection'")))
 
 (defun webmacs-open-connection (host port)
   "Open a connection to the webmacs server running on HOST at PORT.
@@ -96,11 +96,10 @@ Argument PORT The listen port of the webmacs server."
 ;;; Narrowing function
 
 ;;; TODO: Store all adviced fns in a field
-;;; TODO: Add `webmacs-without-narrow'
+;;; TODO: Add `webmacs-without-narrow' macro
 (defmacro webmacs-advice-narrow (f)
   `(defadvice ,f (after ,(intern (format "webmacs-%S" f)) activate)
      (when webmacs-mode
-       ;; (message (format "webmacs-%S" (quote ,f)))
        (webmacs-send-data (list 'narrow (buffer-name) (point-min) (point-max))))))
 
 (webmacs-advice-narrow narrow-to-region)
@@ -115,7 +114,6 @@ Argument PORT The listen port of the webmacs server."
 
 (defadvice widen (after webmacs-widen activate)
   (when webmacs-mode
-    ;; (message "webmacs-widen")
     (webmacs-send-data (list 'widen (buffer-name) (point-min) (point-max)))))
 
 ;;; Utility functions for problematic minor modes
