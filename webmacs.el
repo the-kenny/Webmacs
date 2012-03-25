@@ -86,7 +86,11 @@ Argument PORT The listen port of the webmacs server."
       (widen)
       (ad-enable-advice 'widen 'after 'webmacs-widen)
       (ad-activate 'widen)
-      (list 'buffer-data (buffer-name buffer) mode-name (buffer-size) (webmacs-encode-string (buffer-string))))))
+      (list 'buffer-data
+            (buffer-name buffer)
+            (format-mode-line mode-name)
+            (buffer-size)
+            (webmacs-encode-string (buffer-string))))))
 
 (defun webmacs-after-change (start end length)
   (if (processp (get-buffer-process webmacs-buffer-name))
