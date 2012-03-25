@@ -82,7 +82,7 @@ Argument PORT The listen port of the webmacs server."
   (with-current-buffer (or buffer (current-buffer))
     (save-restriction
       (ad-disable-advice 'widen 'after 'webmacs-widen)
-      (ad-activate 'widen)
+      (ad-deactivate 'widen)
       (widen)
       (ad-enable-advice 'widen 'after 'webmacs-widen)
       (ad-activate 'widen)
