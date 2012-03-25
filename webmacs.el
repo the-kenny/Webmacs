@@ -15,6 +15,9 @@
 
 (defvar webmacs-warning-threshold 10000)
 
+(defvar webmacs-problematic-minor-modes '(auto-complete-mode)
+  "List of minor modes which cause problems when used together with `webmacs-mode'")
+
 (defun webmacs-process-sentinel (process event)
   (when (equal (process-status process) 'closed)
     ;; TODO: Make this more visible
@@ -115,6 +118,12 @@ Argument PORT The listen port of the webmacs server."
     ;; (message "webmacs-widen")
     (webmacs-send-data (list 'widen (buffer-name) (point-min) (point-max)))))
 
+;;; Utility functions for problematic minor modes
+
+(defun webmacs-find-problematic-minor-modes (&optional buffer)
+  (with-current-buffer (or buffer (current-buffer))
+    (remove-if (lambda (s) (not (buffer-local-value s (current-buffer)))) webmacs-problematic-minor-modes)))
+
 (define-minor-mode webmacs-mode
   "Toggle webmacs publishing.
 With no argument, this command toggles the mode.
@@ -134,13 +143,14 @@ command `webmacs-open-connection'."
     (if (or (< (buffer-size) webmacs-warning-threshold)
               (yes-or-no-p (format "Buffer %s is large (%s). Continue? " (buffer-name) (ls-lisp-format-file-size (buffer-size) t))))
       (if (not (get-buffer-process webmacs-buffer-name))
-        (message "No webmacs connection. Please open one using `webmacs-open-connection'")
-        ;; (if (yes-or-no-p "No webmacs connection. Open one? ")
-        ;;     (call-interactively #'webmacs-open-connection))
+        (error "No webmacs connection. Please open one using `webmacs-open-connection'")
+        (when-let (problematic (webmacs-find-problematic-minor-modes))
+          (message "The following active minor modes can cause problems with webmacs: %S" problematic))
         (add-hook 'after-change-functions #'webmacs-after-change nil 'local)
         (webmacs-publish-buffer (buffer-name)))
       (webmacs-mode 0))
     (remove-hook 'after-change-functions #'webmacs-after-change 'local)))
+
 
 (provide 'webmacs)
 
