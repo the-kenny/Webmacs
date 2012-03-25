@@ -14,6 +14,7 @@
   - [ ] ...on the website
   - [ ] ...in Emacs
 - [ ] Scroll to current cursor position
+- [ ] Don't use noir-async for websockets. Causes more trouble than it's worth
 
 * Later
   - [X] Narrowing (needs hacks on Emacs-side, no hooks :( )
