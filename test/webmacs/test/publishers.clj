@@ -28,3 +28,6 @@
   (fact
     (store-buffer! (make-buffer +name+ "abc"))
     (buffer-changed! [:insert +name+ 0 "x"]) => (make-buffer +name+ "xabc")))
+
+(future-fact "start-listening")
+(future-fact "stop-listening")

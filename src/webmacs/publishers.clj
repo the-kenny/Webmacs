@@ -3,11 +3,12 @@
         lamina.core
         [clojure.java.io :as io]
         [server.socket :as ss]
-        [webmacs.message :as message]))
+        [webmacs.message :as message]
+        [clj-stacktrace.repl :as stacktrace]))
 
 ;;; TODO: Simplify using Broadcasts from netwars
-(def buffer-channels (atom {}))          ;maps buffer-names to lamina channels
-(def buffers (atom {}))
+(def ^:private buffer-channels (atom {}))          ;maps buffer-names to lamina channels
+(def ^:private buffers (atom {}))
 
 (defn buffer-names []
   (keys @buffers))
@@ -69,18 +70,19 @@
     (buffer-changed! request)
     (recur input output)))
 
-(def listen-server (atom nil))
+(defn ^:private connect-callback [is os]
+  (let [ird (java.io.PushbackReader. (io/reader is))
+        owr (io/writer os)]
+    (try
+      (emacs-connection-loop ird owr)
+      (catch java.lang.Throwable e
+        (stacktrace/pst e)
+        (stacktrace/pst-on owr false e)))))
+
+(def ^:private listen-server (atom nil))
 
 (defn start-listening [port]
-  (reset! listen-server
-          (ss/create-server port
-                            (fn [is os]
-                              (let [ird (java.io.PushbackReader. (io/reader is))
-                                    owr (io/writer os)]
-                                (try
-                                  (emacs-connection-loop ird owr)
-                                  (catch java.net.SocketException e
-                                    (println "Got SocketException:" (.getMessage e) "Exiting."))))))))
+  (reset! listen-server (ss/create-server port #'connect-callback)))
 
 (defn stop-listening []
   (when-let [s @listen-server]
