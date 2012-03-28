@@ -73,6 +73,7 @@
 (defn ^:private connect-callback [is os]
   (let [ird (java.io.PushbackReader. (io/reader is))
         owr (io/writer os)]
+    ;; TODO: Add "disconnect" command
     (try
       (emacs-connection-loop ird owr)
       (catch java.lang.Throwable e

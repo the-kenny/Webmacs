@@ -8,6 +8,7 @@
   (web/start-server web-port))
 
 (defn shutdown []
+  ;; TODO: Catch reader exception when closing listening socket
   (publishers/stop-listening)
   (web/stop-server))
 
