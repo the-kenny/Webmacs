@@ -25,15 +25,18 @@
 
                   (pos? pos) (str pos "%")
                   true "Top")]
-    (str "Buffer: " name "\t" pos-str " of " size-str "\t(" mode ")")))
+    (dom/element :div {:id "mode-line"}
+                 (dom/element :span (str "Buffer: " name))
+                 (dom/element :span (str pos-str " of " size-str))
+                 (dom/element :span (str "(" mode ")")))))
+
+(defn update-modeline [parent buffer]
+  (dom/replace-node parent (make-modeline buffer)))
 
 (defn apply-narrow [buffer]
   (if-let [[beg end] (:narrow buffer)]
     (update-in buffer [:contents] subs beg end)
     buffer))
-
-(defn update-modeline [parent buffer]
-  (dom/set-text parent (make-modeline buffer)))
 
 (defn display-buffer [buffer]
   (let [lines (string/split-lines (:contents buffer))]

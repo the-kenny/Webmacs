@@ -23,8 +23,7 @@
                [:pre {:id "line-numbers"}]]
               [:td {:width "100%"}
                [:pre {:id "buffer-contents"}]]]]]
-           ;; [:pre {:id "buffer-contents"}]
-           [:pre {:id "mode-line"}]]
+           [:div {:id "mode-line"}]]
           (javascript-tag ;; "(open-socket \"ws://localhost:3000/sockets/\")"
            (str "webmacs.core.open_socket(\"ws://\"+window.location.host+\"/sockets/" name "\")"))]))
 

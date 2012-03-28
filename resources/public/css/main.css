@@ -20,8 +20,16 @@
 }
 
 #mode-line {
+    font-family: "Courier New", monospace;
+    white-space: pre;
+    font-size: 10pt;
+
     position: fixed;
     bottom: 0px;
     width: 100%;
     background-color: grey;
+}
+
+#mode-line span {
+    margin-right: 15pt;
 }
