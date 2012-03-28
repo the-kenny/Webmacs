@@ -16,7 +16,8 @@
         size (.-length (or (:contents buffer) ""))
         size-str (cond
                    (< +conversion+ size) (str (Math/floor (/ size +conversion+)) "k")
-                   (< (* +conversion+ +conversion+) size) (str (Math/floor (/ size (* +conversion+ +conversion+))) "M"))
+                   (< (* +conversion+ +conversion+) size) (str (Math/floor (/ size (* +conversion+ +conversion+))) "M")
+                   true (str size))
         pos (Math/floor (* 100 (/ (.-y (gdom/getDocumentScroll)) (gdom/getDocumentHeight))))
         pos-str (cond
                   (= 0 (- (gdom/getDocumentHeight) (+ (.-y (gdom/getDocumentScroll))
