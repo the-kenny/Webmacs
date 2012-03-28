@@ -16,12 +16,12 @@
 (defvar webmacs-warning-threshold 10000)
 
 (defvar webmacs-problematic-minor-modes '(auto-complete-mode)
-  "List of minor modes which cause problems when used together with `webmacs-mode'")
+  "List of minor modes which cause problems when used together with `webmacs-mode'.")
 
 (defun webmacs-process-sentinel (process event)
   (when (equal (process-status process) 'closed)
     ;; TODO: Make this more visible
-    (error "Lost webmacs connection. Please reconnect using `webmacs-open-connection'")))
+    (error "Lost webmacs connection.  Please reconnect using `webmacs-open-connection'")))
 
 (defun webmacs-open-connection (host port)
   "Open a connection to the webmacs server running on HOST at PORT.
@@ -148,7 +148,7 @@ command `webmacs-open-connection'."
     (if (or (< (buffer-size) webmacs-warning-threshold)
               (yes-or-no-p (format "Buffer %s is large (%s). Continue? " (buffer-name) (ls-lisp-format-file-size (buffer-size) t))))
       (if (not (get-buffer-process webmacs-buffer-name))
-        (error "No webmacs connection. Please open one using `webmacs-open-connection'")
+        (error "No webmacs connection.  Please open one using `webmacs-open-connection'")
         (when-let (problematic (webmacs-find-problematic-minor-modes))
           (message "The following active minor modes can cause problems with webmacs: %S" problematic))
         (add-hook 'after-change-functions #'webmacs-after-change nil 'local)
