@@ -5,7 +5,7 @@
                  [server-socket "1.0.0"]
                  [commons-codec "1.5"]
                  [noir "1.2.2"]
-                 [noir-async "0.1.2"]
+                 [noir-async "0.1.4"]
                  [clj-stacktrace "0.2.4"]]
   :cljsbuild {:crossovers [webmacs.buffer],
               :builds [{:source-path "src-cljs/",
