@@ -31,7 +31,7 @@
         old-n (count els)]
     (cond
       (< old-n new-n) (doseq [i (range old-n new-n)]
-                        (append-newline parent (dom/element :span (get lines i)))g)
+                        (append-newline parent (dom/element :span (get lines i))))
       (> old-n new-n) (doseq [i (range new-n old-n)]
                         (remove-element-and-newline (get els i))))
 
