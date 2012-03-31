@@ -150,7 +150,7 @@ command `webmacs-open-connection'."
       (if (not (get-buffer-process webmacs-buffer-name))
         (error "No webmacs connection.  Please open one using `webmacs-open-connection'")
         (when-let (problematic (webmacs-find-problematic-minor-modes))
-          (message "The following active minor modes can cause problems with webmacs: %S" problematic))
+          (warn "The following active minor modes are known to cause problems with webmacs: %S" problematic))
         (add-hook 'after-change-functions #'webmacs-after-change nil 'local)
         (webmacs-publish-buffer (buffer-name)))
       (webmacs-mode 0))
