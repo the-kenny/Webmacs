@@ -1,15 +1,12 @@
 (ns webmacs.pages.buffer
-  (:use noir.core
-        noir-async.core
-        aleph.http
-        lamina.core
+  (:use aleph.http
         hiccup.core
-        hiccup.page-helpers)
-  (:require [noir.server :as server]
-            [webmacs.publishers :as publishers]
+        hiccup.page-helpers
+        lamina.core)
+  (:require [webmacs.publishers :as publishers]
             [webmacs.buffer :as buffer]))
 
-(defpage "/emacs/:name" {:keys [name]}
+(defn buffer-page [name]
   (html5 [:head
           [:title "Emacs: " name]
           (include-js "/js/main.js")
@@ -27,7 +24,7 @@
           (javascript-tag ;; "(open-socket \"ws://localhost:3000/sockets/\")"
            (str "webmacs.core.open_socket(\"ws://\"+window.location.host+\"/sockets/" name "\")"))]))
 
-(defwebsocket "/sockets/:sname" {:keys [sname]} conn
+(defn websocket-handler [sname conn handshake]
   ;;`send-message' is equal to `enqueue', so `conn' must be a channel
   ;; TODO: Move this out of here
   ;; TODO: Remove client on close
@@ -35,5 +32,5 @@
     (receive-all chan (fn [msg] (enqueue (:request-channel conn) (str msg))))
    (publishers/add-client! sname chan))
 
-  (on-receive conn (fn [msg] (println "Got a message: " msg)))
-  (on-close conn (fn [] (println "Socket down!"))))
+  (receive-all conn (fn [msg] (println "Got a message: " msg)))
+  (on-closed conn (fn [] (println "Socket down!"))))
