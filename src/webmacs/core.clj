@@ -1,6 +1,6 @@
 (ns webmacs.core
   (:require [webmacs.publishers :as publishers]
-        [webmacs.server :as web])
+            [webmacs.server :as web])
   (:gen-class))
 
 (defn bootstrap [web-port emacs-port]

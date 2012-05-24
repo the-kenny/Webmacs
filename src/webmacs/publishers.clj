@@ -1,10 +1,10 @@
 (ns webmacs.publishers
-  (:use [webmacs.buffer :as buffer]
-        lamina.core
-        [clojure.java.io :as io]
-        [server.socket :as ss]
-        [webmacs.message :as message]
-        [clj-stacktrace.repl :as stacktrace]))
+  (:use lamina.core)
+  (:require [webmacs.buffer :as buffer]
+            [clojure.java.io :as io]
+            [server.socket :as ss]
+            [webmacs.message :as message]
+            [clj-stacktrace.repl :as stacktrace]))
 
 ;;; TODO: Simplify using Broadcasts from netwars
 (def ^:private buffer-channels (atom {}))          ;maps buffer-names to lamina channels
@@ -65,7 +65,7 @@
   (let [request (message/parse (read input))
         [op name & req-rest] request]
     (when (= op :buffer-data)
-      (store-buffer! (make-buffer name)))
+      (store-buffer! (buffer/make-buffer name)))
 
     (buffer-changed! request)
     (recur input output)))
